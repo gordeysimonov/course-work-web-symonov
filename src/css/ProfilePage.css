@@ -1,0 +1,191 @@
+/* Стилі для секції "Мій профіль" */
+.profile-container {
+    background-color: #001f3d;
+    color: white;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.profile-container h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    text-align: center;
+    background-image: linear-gradient(45deg, #bb86fc, #03dac6);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+/* Стилі для деталей профілю */
+.profile-details-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.profile-details-container p {
+    margin: 10px 0;
+    font-size: 18px;
+    text-align: center;
+}
+
+.profile-details-container input {
+    background-color: #1e2a47;
+    border: 1px solid #bb86fc;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 250px;
+    text-align: center;
+}
+
+.profile-details-container button {
+    background-color: #03dac6;
+    color: #001f3d;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    margin-top: 30px;
+}
+
+.profile-details-container button:hover {
+    background-color: #bb86fc;
+    color: #001f3d;
+}
+
+/* Стилі для фото профілю */
+.profile-picture-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.profile-picture-section img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    border: 3px solid #bb86fc;
+}
+
+.profile-picture-section input {
+    margin-top: 10px;
+    color: white;
+}
+
+.profile-picture-section button {
+    background-color: #03dac6;
+    color: #001f3d;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    margin-top: 30px;
+}
+
+.profile-picture-section button:hover {
+    background-color: #bb86fc;
+}
+
+/* Стилі для підписок та підписників */
+.subscription-info {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+
+.subscription-info p {
+    margin: 0;
+}
+
+.subscription-info a {
+    color: #03dac6;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.subscription-info a:hover {
+    color: #bb86fc;
+}
+
+/* Стилі для плейлистів */
+.playlists-section {
+    margin-top: 40px;
+}
+
+.playlists-section h3 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.playlists-section button {
+    background-color: #03dac6;
+    color: #001f3d;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    margin-bottom: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.playlists-section button:hover {
+    background-color: #bb86fc;
+    color: #001f3d;
+}
+
+.playlist-card {
+    background-color: #1e2a47;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.playlist-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.playlist-card h4 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #bb86fc;
+}
+
+.playlist-card p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: white;
+}
+
+.create-file-container {
+    margin-top: 20px;
+    margin-bottom: -20px;
+}
+
+.playlists-section a {
+    color: #03dac6;
+    text-decoration: none;
+}
+
+.playlists-section a:hover {
+    text-decoration: underline;
+}

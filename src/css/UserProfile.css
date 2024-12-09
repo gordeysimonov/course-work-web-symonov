@@ -1,0 +1,173 @@
+/* Стилі для профілю користувача */
+.profile-container {
+    background-color: #001f3d;
+    color: white;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.profile-container h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    text-align: center;
+    background-image: linear-gradient(45deg, #bb86fc, #03dac6);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.profile-picture {
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.profile-details {
+    font-size: 18px;
+}
+
+.profile-details p {
+    margin: 5px 0;
+}
+
+.subscribe-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Стилі для кнопок підписки та відписки */
+/* Стиль для кнопки підписки */
+.subscribe-button {
+    background-color: #bb86fc; /* Фіолетовий фон */
+    color: white; /* Білий текст */
+    border: 2px solid #bb86fc; /* Фіолетова межа */
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    border-radius: 25px; /* Заокруглені кути */
+}
+
+.subscribe-button:hover {
+    background-color: #03dac6; /* Змінюється фон на бірюзовий при наведенні */
+    color: #001f3d; /* Текст стає темно-синім */
+}
+
+/* Стиль для кнопки відписки */
+.unsubscribe-button {
+    background-color: #001f3d; /* Темно-синій фон */
+    color: white; /* Білий текст */
+    border: 2px solid #bb86fc; /* Фіолетова межа */
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    border-radius: 25px; /* Заокруглені кути */
+}
+
+.unsubscribe-button:hover {
+    background-color: #bb86fc; /* Змінюється фон на фіолетовий при наведенні */
+    color: #001f3d; /* Текст стає темно-синім */
+}
+
+
+.music-file-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.music-file-item {
+    background-color: #1e2a47;
+    margin-bottom: 15px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column; /* Вертикальне розташування елементів */
+}
+
+.file-grid {
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%; /* Поділяємо блок на 4 частини */
+    gap: 15px; /* Між елементами буде відступ */
+    align-items: center; /* Вертикальне вирівнювання всіх елементів по центру */
+}
+
+.file-title-container {
+    display: flex;
+    justify-content: center; /* Горизонтальне вирівнювання */
+    align-items: center;     /* Вертикальне вирівнювання */
+    text-align: center;      /* Центруємо текст всередині */
+    font-size: 16px;
+    color: white;
+}
+
+.file-cover-container {
+    display: flex;
+    justify-content: center; /* Горизонтальне вирівнювання */
+    align-items: center;     /* Вертикальне вирівнювання */
+}
+
+.file-cover-image {
+    width: 100%;
+    height: auto;
+    max-width: 200px; /* Максимальна ширина обкладинки */
+    border-radius: 8px;
+}
+
+.audio-player-container {
+    display: flex;
+    justify-content: center; /* Горизонтальне вирівнювання */
+    align-items: center;     /* Вертикальне вирівнювання */
+}
+
+.file-info-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;     /* Вертикальне вирівнювання */
+    text-align: center;      /* Центруємо текст всередині */
+}
+
+.file-info-container p {
+    margin: 5px 0;
+    color: white;
+}
+
+.file-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.file-actions button {
+    background-color: transparent;
+    color: #bb86fc;
+    border: 1px solid #bb86fc;
+    padding: 8px 12px;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.file-actions button:hover {
+    background-color: #bb86fc;
+    color: #001f3d;
+}
+
+.error {
+    color: red;
+    text-align: center;
+    font-size: 18px;
+}
+
+.file-cover-image {
+    display: block; /* Зберігає обкладинку як блочний елемент */
+    margin-left: 50px; /* Центрує обкладинку по горизонталі */
+    margin-right: auto;
+}

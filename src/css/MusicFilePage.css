@@ -1,0 +1,132 @@
+.music-file-page {
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+}
+
+.music-file-page .content h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    text-align: center;
+    background-image: linear-gradient(45deg, #bb86fc, #03dac6);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.content {
+    max-width: 800px;
+    width: 100%;
+    padding: 30px;
+    background-color: #001f3d;
+    margin: 0 auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    border-radius: 16px;
+    border: 5px solid;  /* Визначаємо товщину бордеру */
+    border-image: linear-gradient(45deg, #bb86fc, #03dac6) 1;  /* Зелено-фіолетовий градієнт */
+}
+
+.music-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;  /* Світлий колір тексту */
+}
+
+.cover-image {
+    max-width: 300px;
+    max-height: 300px;
+    margin-top: 20px;
+    border-radius: 8px;
+}
+
+.comment-container {
+    margin-top: 30px;
+}
+
+.comment-input {
+    width: 98%;
+    height: 150px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: none;
+    margin-top: 10px;
+    font-size: 16px;
+    background-color: #333; /* Темний фон для textarea */
+    color: #fff;  /* Світлий текст */
+}
+
+.comment-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #1e3a8a; /* Темно-синій фон для кнопок */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.comment-button:hover {
+    background-color: #2563eb; /* Світліший синій при наведенні */
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
+}
+
+.comments-list {
+    margin-top: 20px;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+}
+
+.comment-item {
+    margin-bottom: 10px;
+    padding: 20px;
+    padding-bottom: 30px;
+    background-color: #333;  /* Темний фон для коментарів */
+    border-radius: 5px;
+    color: #fff;  /* Світлий текст */
+}
+
+.comment-date {
+    font-size: 12px;
+    color: #bbb;  /* Світло-сірий текст для дати */
+}
+
+.edit-button,
+.delete-button {
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-button {
+    background-color: #f59e0b;  /* Оранжевий для редагування */
+    margin-right: 20px;
+}
+
+.delete-button {
+    background-color: #f44336; /* Червоний для видалення */
+}
+
+.edit-button:hover {
+    background-color: #e87e0a;  /* Темніший оранжевий при наведенні */
+}
+
+.delete-button:hover {
+    background-color: #d32f2f; /* Темніший червоний при наведенні */
+}
+
+.music-file-page .content a {
+    color: #03dac6;
+    text-decoration: none;
+}
+
+.music-file-page .content a:hover {
+    text-decoration: underline;
+}

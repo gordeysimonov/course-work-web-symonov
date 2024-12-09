@@ -1,0 +1,56 @@
+.subscriptions-page {
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.subscriptions-heading {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #bb86fc;
+}
+
+.no-subscriptions {
+    font-size: 18px;
+    color: #666;
+}
+
+.subscriptions-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.subscription-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.subscription-profile-picture {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.subscription-name {
+    font-size: 18px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.subscription-name:hover {
+    text-decoration: underline;
+}
+
+.unsubscribe-button {
+    margin-left: auto;
+
+}
+
+.subscription-item:hover {
+    background: linear-gradient(45deg, #018786, #bb86fc);
+    cursor: pointer;
+}

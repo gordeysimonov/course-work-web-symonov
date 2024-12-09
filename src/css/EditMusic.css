@@ -1,0 +1,100 @@
+/* Основні стилі для контейнера */
+.edit-music-page {
+    background-color: #1e2a47;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    margin: 0 auto;
+    margin-top: 50px;
+    margin-bottom: 35px;
+    color: #fff;
+}
+
+/* Заголовок сторінки */
+.edit-music-page h2 {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #bb86fc;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Заголовок для обкладинки */
+.edit-music-page h3 {
+    margin-bottom: 10px;
+    color: #bbb;
+}
+
+/* Стилі для всіх полів вводу */
+.edit-music-page input[type="text"],
+.edit-music-page input[type="number"],
+.edit-music-page input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #bbb;
+    background-color: #001f3d;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Стилі для зображення обкладинки */
+.edit-music-page img {
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+/* Стилі для кнопки "Зберегти зміни" */
+.edit-music-page button {
+    background-color: #03dac6;
+    color: #001f3d;
+    border: 1px solid #03dac6;
+    border-radius: 4px;
+    padding: 12px 24px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.edit-music-page button:hover {
+    background-color: #bb86fc;
+    color: #001f3d;
+}
+
+/* Стиль для повідомлень (завантаження та помилки) */
+.edit-music-page .message {
+    font-size: 18px;
+    color: #ff4081;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.edit-music-page .message.success {
+    color: #4caf50;
+}
+
+/* Стилі для форми */
+.edit-music-page form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Відступи та межі для кожного поля */
+.edit-music-page div {
+    margin-bottom: 20px;
+}
+
+.edit-music-page label {
+    font-size: 18px;
+    color: #bbb;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Стилі для завантаження і редагування */
+.edit-music-page input[type="file"] {
+    font-size: 16px;
+}

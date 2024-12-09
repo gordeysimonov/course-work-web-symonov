@@ -1,0 +1,91 @@
+/* Основні стилі для сторінки повідомлень */
+.notifications-container {
+    max-width: 800px;
+    width: 100%;
+    padding: 30px;
+    background-color: #001f3d;
+    margin: 30px auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    border-radius: 16px;
+    border: 5px solid;  /* Визначаємо товщину бордеру */
+    border-image: linear-gradient(45deg, #bb86fc, #03dac6) 1;
+}
+
+/* Заголовок */
+.notifications-container h2 {
+    font-size: 28px;
+    color: #bb86fc;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Фільтрація повідомлень */
+.notifications-container select {
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #555;
+    color: #fff;
+    margin-right: 10px;
+}
+
+.notifications-container label {
+    font-size: 16px;
+    margin-right: 10px;
+    color: #bbb;
+}
+
+/* Кнопка для позначення всіх повідомлень як прочитаних */
+.notifications-container button {
+    padding: 8px 15px;
+    background-color: #bb86fc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.notifications-container button:hover {
+    background-color: #018786;
+}
+
+/* Список повідомлень */
+.notifications-container ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.notifications-container li {
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #555;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Стиль для непрочитаних повідомлень */
+.notifications-container li[style*="fontWeight: bold"] {
+    border-left: 5px solid red; /* Червона лінія для непрочитаних повідомлень */
+}
+
+/* Стилі для дати отримання */
+.notifications-container small {
+    font-size: 12px;
+    color: #bbb;
+}
+
+.notifications-container a {
+    color: #03dac6;
+    text-decoration: none;
+}
+
+.notifications-container a:hover {
+    text-decoration: underline;
+}

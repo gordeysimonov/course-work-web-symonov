@@ -1,0 +1,117 @@
+/* Стилі для картки плейлиста */
+.playlist-card {
+    background-color: #2c3e50; /* Темний фон картки */
+    color: white; /* Білий текст */
+    border-radius: 10px; /* Заокруглені кути */
+    padding: 20px;
+    margin: 15px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Легкий ефект тіні */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.playlist-card:hover {
+    transform: translateY(-5px); /* Легкий підйом при наведенні */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Підвищена тінь при наведенні */
+}
+
+/* Стилі для заголовка плейлиста */
+.playlist-card h4 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Стилі для інпуту в режимі редагування */
+.playlist-card input[type="text"] {
+    padding: 8px;
+    font-size: 16px;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    width: 100%;
+    background-color: #34495e;
+    color: white;
+}
+
+.playlist-card input[type="text"]:focus {
+    outline: none;
+    border-color: #03dac6; /* Зміна кольору рамки при фокусі */
+}
+
+/* Стилі для кнопок */
+.playlist-card button {
+    background-color: #bb86fc;
+    color: black;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+.playlist-card button:hover {
+    background-color: #03dac6; /* Зміна фону при наведенні */
+    transform: translateY(-2px); /* Легкий ефект підйому */
+}
+
+/* Стилі для кнопки "Відкрити плейлист" */
+.playlist-card a button {
+    width: auto; /* Для кнопки "Відкрити плейлист" ширина автоматична */
+    margin-top: 10px;
+}
+
+/* Стилі для кнопки "Редагувати плейлист" */
+.playlist-card button:nth-of-type(2) {
+    background-color: #f39c12;
+    width: auto;
+    margin-top: 10px;
+}
+
+.playlist-card button:nth-of-type(2):hover {
+    background-color: #f1c40f;
+}
+
+/* Стилі для кнопки "Видалити плейлист" */
+.playlist-card button:nth-of-type(3) {
+    background-color: #e74c3c;
+    width: auto;
+    margin-top: 10px;
+}
+
+.playlist-card button:nth-of-type(3):hover {
+    background-color: #c0392b;
+}
+
+/* Стилі для скасування редагування */
+.playlist-card button:nth-of-type(4) {
+    background-color: #7f8c8d;
+    width: auto;
+    margin-top: 10px;
+}
+
+.playlist-card button:nth-of-type(4):hover {
+    background-color: #95a5a6;
+}
+
+/* Стилі для кількості пісень */
+.playlist-card p {
+    font-size: 16px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Стилі для кнопки "Зберегти" */
+.playlist-card button:nth-of-type(1) {
+    background-color: #03dac6;
+    width: auto;
+    margin-top: 10px;
+}
+
+.playlist-card button:nth-of-type(1):hover {
+    background-color: #bb86fc;
+}
