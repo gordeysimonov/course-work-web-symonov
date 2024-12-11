@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: TESTS
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: BroXiK22
+    driverClassName: org.postgresql.Driver
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+  web:
+    resources:
+      static-locations:
+        - "classpath:/static/"
+        - "file:uploads/cover-images/"
+
