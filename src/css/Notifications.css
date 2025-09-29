@@ -1,4 +1,3 @@
-/* Основні стилі для сторінки повідомлень */
 .notifications-container {
     max-width: 800px;
     width: 100%;
@@ -11,7 +10,6 @@
     border-image: linear-gradient(45deg, #bb86fc, #03dac6) 1;
 }
 
-/* Заголовок */
 .notifications-container h2 {
     font-size: 28px;
     color: #bb86fc;
@@ -19,7 +17,6 @@
     margin-bottom: 20px;
 }
 
-/* Фільтрація повідомлень */
 .notifications-container select {
     padding: 5px;
     font-size: 16px;
@@ -36,7 +33,6 @@
     color: #bbb;
 }
 
-/* Кнопка для позначення всіх повідомлень як прочитаних */
 .notifications-container button {
     padding: 8px 15px;
     background-color: #bb86fc;
@@ -52,7 +48,6 @@
     background-color: #018786;
 }
 
-/* Список повідомлень */
 .notifications-container ul {
     list-style-type: none;
     padding-left: 0;
@@ -70,12 +65,10 @@
     align-items: center;
 }
 
-/* Стиль для непрочитаних повідомлень */
 .notifications-container li[style*="fontWeight: bold"] {
-    border-left: 5px solid red; /* Червона лінія для непрочитаних повідомлень */
+    border-left: 5px solid red;
 }
 
-/* Стилі для дати отримання */
 .notifications-container small {
     font-size: 12px;
     color: #bbb;

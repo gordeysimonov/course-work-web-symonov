@@ -5,7 +5,21 @@ import '../css/Header.css'; // Стилі для Header
 
 const Header = ({ user, onLogout }) => {
     const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+    const [userName, setUserName] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user && user.sub) {
+            axios.get(`http://localhost:8080/api/users/${user.sub}`)
+                .then(response => {
+                    setUserName(response.data.name);
+                })
+                .catch(error => {
+                    console.error("Помилка при отриманні користувача:", error);
+                    setUserName(null);
+                });
+        }
+    }, [user]);
 
     useEffect(() => {
         if (user) {
@@ -24,28 +38,25 @@ const Header = ({ user, onLogout }) => {
 
     const handleLogout = () => {
         onLogout();
-        navigate("/"); // Перенаправляємо на головну сторінку
+        navigate("/");
     };
 
     return (
         <header className="header">
             <div className="logo">
-                <h1>MusicApp</h1>
+                <h1><Link to="/">MusicApp</Link></h1>
             </div>
             <nav className="nav">
                 {user ? (
                     <div className="user-actions">
-                        <span>Привіт, {user.username}!</span>
+                        <span>Привіт, {userName}!</span>
 
-                        {/* Кнопка для переходу до профілю */}
                         <Link to="/profile" className="profile-link">
                             <button className="action-button">Перейти до профілю</button>
                         </Link>
 
-                        {/* Кнопка для виходу */}
                         <button onClick={handleLogout} className="action-button">Вийти</button>
 
-                        {/* Кнопка для переходу до повідомлень */}
                         <Link to="/my-notifications" className="notifications-link" state={{ user }}>
                             <button className="action-button">
                                 Повідомлення

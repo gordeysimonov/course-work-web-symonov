@@ -1,28 +1,32 @@
-/* Стилі для хедера */
 .header {
-    position: fixed; /* Фіксуємо хедер у верхній частині */
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%; /* Розтягуємо на всю ширину */
-    background-color: #1e2a47; /* Фон для хедера */
+    width: 100%;
+    background-color: #1e2a47;
     color: #fff;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    z-index: 1000; /* Встановлюємо високий z-index, щоб хедер залишався зверху */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Тінь для естетичного вигляду */
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     margin-left: -30px;
 }
 
 .logo h1 {
     font-size: 28px;
-    color: #bb86fc; /* Колір назви */
+    color: #bb86fc;
     margin: 0;
     margin-left: 30px;
     font-family: 'Arial', sans-serif;
     letter-spacing: 1px;
     text-transform: uppercase;
+}
+
+.logo h1 a {
+    text-decoration: none; /* Вимикає підкреслення */
+    color: inherit; /* Спадковий колір, як у h1 */
 }
 
 .nav {
@@ -33,10 +37,9 @@
 .user-actions {
     display: flex;
     align-items: center;
-    gap: 15px; /* Відступ між кнопками */
+    gap: 15px;
 }
 
-/* Загальний стиль для всіх кнопок (Профіль, Вийти, Повідомлення) */
 .action-button {
     background: transparent;
     color: #bb86fc;
@@ -57,7 +60,6 @@
     position: relative;
 }
 
-/* Стилі для значка повідомлень */
 .notification-badge {
     position: absolute;
     top: -5px;

@@ -12,41 +12,39 @@ const PlaylistCard = ({ playlist, onDelete }) => {
     useEffect(() => {
         const fetchAllSongs = async () => {
             try {
-                // Отримуємо всі пісні
                 const response = await axios.get('http://localhost:8080/api/music-files');
-                setAllSongs(response.data); // Зберігаємо всі пісні у стані
+                setAllSongs(response.data);
             } catch (error) {
                 console.error('Error fetching all songs:', error);
             }
         };
 
-        fetchAllSongs(); // Викликаємо функцію для завантаження всіх пісень
+        fetchAllSongs();
     }, []);
 
     useEffect(() => {
         const countSongsInPlaylist = () => {
             if (allSongs.length > 0) {
-                // Фільтруємо пісні, які належать до поточного плейлиста
                 const count = allSongs.filter(song =>
                     song.playlists.some(playlistItem => playlistItem.id === playlist.id)
                 ).length;
 
-                setPlaylistSongsCount(count); // Встановлюємо кількість пісень
+                setPlaylistSongsCount(count);
             }
         };
 
-        countSongsInPlaylist(); // Викликаємо функцію підрахунку пісень при зміні списку пісень або плейлиста
-    }, [allSongs, playlist.id]); // Перераховуємо, коли змінюються всі пісні або playlist.id
+        countSongsInPlaylist();
+    }, [allSongs, playlist.id]);
 
     const handleDelete = () => {
         const confirmDelete = window.confirm('Ви впевнені, що хочете видалити цей плейлист?');
         if (confirmDelete) {
-            onDelete(playlist.id); // викликаємо функцію видалення
+            onDelete(playlist.id);
         }
     };
 
     const handleEditClick = () => {
-        setIsEditing(true); // Включаємо режим редагування
+        setIsEditing(true);
     };
 
     const handleSaveClick = async () => {
@@ -56,15 +54,13 @@ const PlaylistCard = ({ playlist, onDelete }) => {
         }
 
         try {
-            // Відправляємо запит на сервер для оновлення назви плейлиста
             const response = await axios.put(`http://localhost:8080/api/playlists/${playlist.id}`, {
                 name: newPlaylistName,
             });
 
-            // Якщо запит успішний, оновлюємо дані плейлиста
             if (response.status === 200) {
                 alert('Назва плейлиста оновлена');
-                setIsEditing(false); // Виходимо з режиму редагування
+                setIsEditing(false);
             }
         } catch (error) {
             console.error('Error updating playlist name:', error);
@@ -91,7 +87,7 @@ const PlaylistCard = ({ playlist, onDelete }) => {
                 </div>
             )}
 
-            <p>Кількість пісень: {playlistSongsCount}</p> {/* Відображаємо кількість пісень */}
+            <p>Кількість пісень: {playlistSongsCount}</p>
             <Link to={`/playlist/${playlist.id}`}>
                 <button>Відкрити плейлист</button>
             </Link>

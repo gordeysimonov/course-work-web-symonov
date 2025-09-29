@@ -6,8 +6,6 @@ import '../css/Home.css';
 
 const Home = ({ user }) => {
     const [categories, setCategories] = useState([]);
-
-    // Отримуємо категорії при завантаженні сторінки
     useEffect(() => {
         const fetchCategories = async () => {
             try {

@@ -9,14 +9,12 @@ const CategoryPage = ({ user }) => {
     const [category, setCategory] = useState(null);
     const [musicFiles, setMusicFiles] = useState([]); // Стан для музичних файлів
 
-    // Отримуємо дані категорії при завантаженні сторінки
     useEffect(() => {
         const fetchCategory = async () => {
             try {
                 const categoryResponse = await axios.get(`http://localhost:8080/api/categories/${id}`);
                 setCategory(categoryResponse.data);
 
-                // Отримуємо всі музичні файли
                 const musicFilesResponse = await axios.get('http://localhost:8080/api/music-files');
                 const filteredFiles = musicFilesResponse.data.filter((file) =>
                     file.categories.some((category) => category.id === parseInt(id))
@@ -59,12 +57,10 @@ const CategoryPage = ({ user }) => {
                             </div>
                             <div className="file-user">
                                 <span>від </span>
-                                <Link
-                                    to={user?.sub === file.uploadedBy?.id.toString()
-                                        ? `/profile`
-                                        : `/user-profile/${file.uploadedBy?.id}`}
-                                >
-                                    {file.uploadedBy?.name || 'Анонім'}
+                                <Link to={user?.sub === file.uploadedBy.id.toString()
+                                    ? '/profile'
+                                    : `/user-profile/${file.uploadedBy.id}`}>
+                                    {file.uploadedBy.name || 'Анонім'}
                                 </Link>
                             </div>
                             {file.coverImage && (
@@ -79,7 +75,6 @@ const CategoryPage = ({ user }) => {
                                     </Link>
                                 </div>
                             )}
-                            {/* Використовуємо кастомний програвач */}
                             <CustomAudioPlayer src={`http://localhost:8080/api/music-files/${file.id}`} />
                             <div className="file-details">
                                 {file.artist && (

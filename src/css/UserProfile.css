@@ -1,4 +1,3 @@
-/* Стилі для профілю користувача */
 .profile-container {
     background-color: #001f3d;
     color: white;
@@ -40,41 +39,37 @@
     margin-top: 20px;
 }
 
-/* Стилі для кнопок підписки та відписки */
-/* Стиль для кнопки підписки */
 .subscribe-button {
-    background-color: #bb86fc; /* Фіолетовий фон */
-    color: white; /* Білий текст */
-    border: 2px solid #bb86fc; /* Фіолетова межа */
+    background-color: #bb86fc;
+    color: white;
+    border: 2px solid #bb86fc;
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
     transition: 0.3s ease;
-    border-radius: 25px; /* Заокруглені кути */
+    border-radius: 25px;
 }
 
 .subscribe-button:hover {
-    background-color: #03dac6; /* Змінюється фон на бірюзовий при наведенні */
-    color: #001f3d; /* Текст стає темно-синім */
+    background-color: #03dac6;
+    color: #001f3d;
 }
 
-/* Стиль для кнопки відписки */
 .unsubscribe-button {
-    background-color: #001f3d; /* Темно-синій фон */
-    color: white; /* Білий текст */
-    border: 2px solid #bb86fc; /* Фіолетова межа */
+    background-color: #001f3d;
+    color: white;
+    border: 2px solid #bb86fc;
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
     transition: 0.3s ease;
-    border-radius: 25px; /* Заокруглені кути */
+    border-radius: 25px;
 }
 
 .unsubscribe-button:hover {
-    background-color: #bb86fc; /* Змінюється фон на фіолетовий при наведенні */
-    color: #001f3d; /* Текст стає темно-синім */
+    background-color: #bb86fc;
+    color: #001f3d;
 }
-
 
 .music-file-list {
     list-style: none;
@@ -89,49 +84,49 @@
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     display: flex;
-    flex-direction: column; /* Вертикальне розташування елементів */
+    flex-direction: column;
 }
 
 .file-grid {
     display: grid;
-    grid-template-columns: 25% 25% 25% 25%; /* Поділяємо блок на 4 частини */
-    gap: 15px; /* Між елементами буде відступ */
-    align-items: center; /* Вертикальне вирівнювання всіх елементів по центру */
+    grid-template-columns: 25% 25% 25% 25%;
+    gap: 15px;
+    align-items: center;
 }
 
 .file-title-container {
     display: flex;
-    justify-content: center; /* Горизонтальне вирівнювання */
-    align-items: center;     /* Вертикальне вирівнювання */
-    text-align: center;      /* Центруємо текст всередині */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     font-size: 16px;
     color: white;
 }
 
 .file-cover-container {
     display: flex;
-    justify-content: center; /* Горизонтальне вирівнювання */
-    align-items: center;     /* Вертикальне вирівнювання */
+    justify-content: center;
+    align-items: center;
 }
 
 .file-cover-image {
     width: 100%;
     height: auto;
-    max-width: 200px; /* Максимальна ширина обкладинки */
+    max-width: 200px;
     border-radius: 8px;
 }
 
 .audio-player-container {
     display: flex;
-    justify-content: center; /* Горизонтальне вирівнювання */
-    align-items: center;     /* Вертикальне вирівнювання */
+    justify-content: center;
+    align-items: center;
 }
 
 .file-info-container {
     display: flex;
     flex-direction: column;
-    align-items: center;     /* Вертикальне вирівнювання */
-    text-align: center;      /* Центруємо текст всередині */
+    align-items: center;
+    text-align: center;
 }
 
 .file-info-container p {
@@ -167,7 +162,7 @@
 }
 
 .file-cover-image {
-    display: block; /* Зберігає обкладинку як блочний елемент */
-    margin-left: 50px; /* Центрує обкладинку по горизонталі */
+    display: block;
+    margin-left: 50px;
     margin-right: auto;
 }

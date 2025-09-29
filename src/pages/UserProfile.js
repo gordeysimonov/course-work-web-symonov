@@ -110,7 +110,7 @@ const UserProfile = ({ user }) => {
                 <>
                     <div className="profile-info">
                         <img
-                            src={profileData.profilePicture ? `data:image/jpeg;base64,${profileData.profilePicture}` : 'path/to/default/profile-picture.jpg'}
+                            src={`http://localhost:8080/api/users/${profileData.id}/image`}
                             alt="Profile"
                             width="100"
                             height="100"
@@ -119,7 +119,8 @@ const UserProfile = ({ user }) => {
                         <div className="profile-details">
                             <p><strong>Ім'я:</strong> {profileData.name}</p>
                             <p><strong>Email:</strong> {profileData.email}</p>
-                            <p><strong>Дата реєстрації:</strong> {new Date(profileData.registrationDate).toLocaleDateString()}</p>
+                            <p><strong>Дата
+                                реєстрації:</strong> {new Date(profileData.registrationDate).toLocaleDateString()}</p>
                         </div>
                     </div>
 
@@ -141,13 +142,11 @@ const UserProfile = ({ user }) => {
                             {musicFiles.map((file) => (
                                 <li key={file.id} className="music-file-item">
                                     <div className="file-grid">
-                                        {/* Перша частина (Назва та хто опублікував) */}
-                                        <div className="file-title-container">
+                                        <div>
                                             <strong>{file.title}</strong> від{' '}
                                             <strong>{file.uploadedBy?.name || 'Анонім'}</strong>
                                         </div>
 
-                                        {/* Друга частина (Обкладинка) */}
                                         {file.coverImage && (
                                             <div className="file-cover-container">
                                                 <Link to={`/music-file/${file.id}`}>
@@ -160,13 +159,11 @@ const UserProfile = ({ user }) => {
                                             </div>
                                         )}
 
-                                        {/* Третя частина (Кастомний програвач) */}
                                         <div className="audio-player-container">
                                             <CustomAudioPlayer
                                                 src={`http://localhost:8080/api/music-files/${file.id}`}/>
                                         </div>
 
-                                        {/* Четверта частина (Інформація про файл) */}
                                         <div className="file-info-container">
                                             {file.artist && <p><strong>Виконавець:</strong> {file.artist}</p>}
                                             {file.genres?.length > 0 && (
@@ -183,7 +180,6 @@ const UserProfile = ({ user }) => {
                                         </div>
                                     </div>
 
-                                    {/* Кнопки редагування та видалення внизу блоку */}
                                     {user && (user.roles.includes('ADMIN') || Number(user.sub) === file.uploadedBy?.id) && (
                                         <div className="file-actions">
                                             <Link to={`/edit/${file.id}`} state={{user}}>

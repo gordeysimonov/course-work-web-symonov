@@ -9,9 +9,9 @@ import EditMusic from './pages/EditMusic';
 import CreateFilePage from './pages/CreateFilePage';
 import ProfilePage from './pages/ProfilePage';
 import UserProfile from './pages/UserProfile';
-import CategoryPage from './pages/CategoryPage'; // Додаємо імпорт сторінки категорії
-import PlaylistPage from './pages/PlaylistPage'; // Додано для сторінки плейлиста
-import PlaylistCreatePage from './pages/PlaylistCreatePage'; // Додано для сторінки створення плейлиста
+import CategoryPage from './pages/CategoryPage';
+import PlaylistPage from './pages/PlaylistPage';
+import PlaylistCreatePage from './pages/PlaylistCreatePage';
 import AddMusicToPlaylist from "./pages/AddMusicToPlaylist";
 import MusicFilePage from "./pages/MusicFilePage";
 import SubscriptionsPage from "./pages/SubscriptionsPage";
@@ -57,9 +57,9 @@ const App = () => {
                 <Route path="/create-file" element={<CreateFilePage user={user} />} />
                 <Route path="/profile" element={<ProfilePage user={user} />} />
                 <Route path="/user-profile/:userId" element={<UserProfile user={user} />} />
-                <Route path="/category/:id" element={<CategoryPage />} /> {/* Додаємо маршрут для категорії */}
-                <Route path="/playlist/:playlistId" element={<PlaylistPage user={user} />} /> {/* Додаємо маршрут для плейлиста */}
-                <Route path="/create-playlist" element={<PlaylistCreatePage user={user} />} /> {/* Додаємо маршрут для створення плейлиста */}
+                <Route path="/category/:id" element={<CategoryPage user={user} />} />
+                <Route path="/playlist/:playlistId" element={<PlaylistPage user={user} />} />
+                <Route path="/create-playlist" element={<PlaylistCreatePage user={user} />} />
                 <Route path="/add-music-to-playlist/:playlistId" element={<AddMusicToPlaylist user={user} />} />
                 <Route path="/music-file/:musicFileId" element={<MusicFilePage user={user} />} />
                 <Route path="/subscriptions" element={<SubscriptionsPage user={user} />} />

@@ -1,48 +1,43 @@
-/* Контейнер для сторінки створення плейлиста */
 .playlist-create-container {
-    max-width: 600px; /* Максимальна ширина для зручного розміщення елементів */
-    margin: 30px auto; /* Центруємо контент */
+    max-width: 600px;
+    margin: 30px auto;
     padding: 30px;
-    font-family: Arial, sans-serif; /* Шрифт для сторінки */
-    background-color: #1e2a47; /* Темний фон сторінки */
-    border-radius: 8px; /* Скруглення кутів контейнера */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Тінь для візуальної глибини */
+    font-family: Arial, sans-serif;
+    background-color: #1e2a47;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Заголовок сторінки */
 .playlist-create-container h2 {
     font-size: 36px;
     text-align: center;
     margin-bottom: 20px;
     color: #bb86fc;
     text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    background-image: linear-gradient(45deg, #bb86fc, #03dac6); /* Градієнтний фон для заголовка */
-    -webkit-background-clip: text; /* Нанесення градієнта на текст */
-    color: transparent; /* Прозорий текст для градієнта */
+    background-image: linear-gradient(45deg, #bb86fc, #03dac6);
+    -webkit-background-clip: text;
+    color: transparent;
 }
 
-/* Стилі для полів вводу */
 .playlist-create-container input[type="text"] {
     width: 96%;
     padding: 12px;
     margin: 10px 0;
     border: 1px solid #fff;
-    background-color: #001f3d; /* Темний фон для поля введення */
-    color: #fff; /* Білий текст */
+    background-color: #001f3d;
+    color: #fff;
     border-radius: 4px;
     font-size: 16px;
 }
 
-/* Візуальні ефекти для поля введення при фокусі */
 .playlist-create-container input[type="text"]:focus {
-    border-color: #bb86fc; /* Синя рамка при фокусуванні */
+    border-color: #bb86fc;
     outline: none;
 }
 
-/* Стиль для кнопки створення плейлиста */
 .playlist-create-container button {
-    background-color: #bb86fc; /* Фіолетовий фон */
-    color: #001f3d; /* Темно-синій текст */
+    background-color: #bb86fc;
+    color: #001f3d;
     border: 1px solid #bb86fc;
     border-radius: 4px;
     padding: 12px 24px;
@@ -50,16 +45,14 @@
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 20px;
-    width: 100%; /* Кнопка займає всю ширину */
+    width: 100%;
 }
 
-/* Візуальні ефекти для кнопки */
 .playlist-create-container button:hover {
-    background-color: #03dac6; /* Свіжий бірюзовий колір при наведенні */
-    color: #001f3d; /* Текст темно-синій */
+    background-color: #03dac6;
+    color: #001f3d;
 }
 
-/* Стиль для повідомлень */
 .playlist-create-container p {
     font-size: 18px;
     color: #bbb;
@@ -67,14 +60,13 @@
     margin-top: 20px;
 }
 
-/* Стиль для помилок або успішних повідомлень */
 .playlist-create-container .message {
     font-size: 18px;
-    color: #ff4081; /* Колір помилки */
+    color: #ff4081;
     text-align: center;
     margin-top: 20px;
 }
 
 .playlist-create-container .message.success {
-    color: #4caf50; /* Колір для успішних повідомлень */
+    color: #4caf50;
 }

@@ -8,7 +8,6 @@ const CustomAudioPlayer = ({ src }) => {
     const [duration, setDuration] = useState(0);
     const [volume, setVolume] = useState(1);
 
-    // Обробник для відтворення/паузи
     const togglePlay = () => {
         if (isPlaying) {
             audioRef.current.pause();
@@ -18,26 +17,22 @@ const CustomAudioPlayer = ({ src }) => {
         setIsPlaying(!isPlaying);
     };
 
-    // Обробник для оновлення поточного часу
     const updateTime = () => {
         setCurrentTime(audioRef.current.currentTime);
     };
 
-    // Обробник для зміни гучності
     const handleVolumeChange = (event) => {
         const volume = event.target.value;
         audioRef.current.volume = volume;
         setVolume(volume);
     };
 
-    // Обробник для перемотування
     const handleSeek = (event) => {
         const seekTime = event.target.value;
         audioRef.current.currentTime = seekTime;
         setCurrentTime(seekTime);
     };
 
-    // Обробник для встановлення тривалості треку
     const handleLoadedMetadata = () => {
         setDuration(audioRef.current.duration);
     };

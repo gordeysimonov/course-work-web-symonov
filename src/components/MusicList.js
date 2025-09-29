@@ -194,7 +194,6 @@ const MusicList = ({ user }) => {
                                     </Link>
                                 </div>
                             )}
-                            {/* Використовуємо кастомний програвач */}
                             <CustomAudioPlayer src={`http://localhost:8080/api/music-files/${file.id}`} />
                             <div className="file-details">
                                 {file.artist && (

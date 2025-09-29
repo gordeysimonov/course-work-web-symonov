@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import '../css/MusicList.css';
-import CustomAudioPlayer from "../components/CustomAudioPlayer"; // Імпортуємо стилі
+import CustomAudioPlayer from "../components/CustomAudioPlayer";
 
 const PlaylistPage = ({ user }) => {
-    const { playlistId } = useParams(); // Отримуємо ID плейлиста з URL
+    const { playlistId } = useParams();
     const [playlistData, setPlaylistData] = useState(null);
     const [musicFiles, setMusicFiles] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Отримуємо плейлист для відображення його інформації
         const fetchPlaylistData = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/playlists/${playlistId}`);
@@ -26,7 +25,6 @@ const PlaylistPage = ({ user }) => {
     }, [playlistId]);
 
     useEffect(() => {
-        // Отримуємо всі музичні файли та фільтруємо їх за плейлистом
         const fetchMusicFiles = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/music-files');
@@ -70,7 +68,7 @@ const PlaylistPage = ({ user }) => {
     }
 
     return (
-        <div className="music-list"> {/* Контейнер для списку */}
+        <div className="music-list">
             <h2 className="playlist-title">{playlistData.name}</h2>
 
             <h3>Пісні цього плейлиста</h3>
@@ -103,7 +101,6 @@ const PlaylistPage = ({ user }) => {
                                     </Link>
                                 </div>
                             )}
-                            {/* Використовуємо кастомний програвач */}
                             <CustomAudioPlayer src={`http://localhost:8080/api/music-files/${file.id}`}/>
                             <div className="file-details">
                                 {file.artist && (

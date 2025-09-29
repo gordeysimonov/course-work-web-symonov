@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import '../css/MusicList.css';
-import CustomAudioPlayer from "../components/CustomAudioPlayer";  // Імпортуємо стилі
+import CustomAudioPlayer from "../components/CustomAudioPlayer";
 
 const AddMusicToPlaylistPage = ({ user }) => {
     const { playlistId } = useParams(); // Отримуємо ID плейлиста з параметрів URL
@@ -16,7 +16,6 @@ const AddMusicToPlaylistPage = ({ user }) => {
     const [genres, setGenres] = useState([]);
     const [playlistData, setPlaylistData] = useState(null);
 
-    // Отримуємо жанри
     useEffect(() => {
         axios
             .get('http://localhost:8080/api/genres')
@@ -29,7 +28,6 @@ const AddMusicToPlaylistPage = ({ user }) => {
             });
     }, []);
 
-    // Отримуємо дані плейлиста
     useEffect(() => {
         axios
             .get(`http://localhost:8080/api/playlists/${playlistId}`)
@@ -42,7 +40,6 @@ const AddMusicToPlaylistPage = ({ user }) => {
             });
     }, [playlistId]);
 
-    // Отримуємо музичні файли
     useEffect(() => {
         axios
             .get('http://localhost:8080/api/music-files')
@@ -57,7 +54,6 @@ const AddMusicToPlaylistPage = ({ user }) => {
             });
     }, []);
 
-    // Фільтрація та сортування файлів за введеними даними
     useEffect(() => {
         let files = [...musicFiles];
 
@@ -84,7 +80,6 @@ const AddMusicToPlaylistPage = ({ user }) => {
             files.sort((a, b) => new Date(b.downloadDate) - new Date(a.downloadDate));
         }
 
-        // Фільтруємо файли, які вже є в плейлисті
         files = files.filter(file => {
             return !file.playlists.some(playlist => playlist.id === Number(playlistId));
         });
@@ -128,7 +123,6 @@ const AddMusicToPlaylistPage = ({ user }) => {
         <div className="music-list">
             <h2>Додати пісню до плейлиста: {playlistData?.name}</h2>
 
-            {/* Пошуковий рядок */}
             <div className="filter-group">
                 <input
                     type="text"
@@ -138,7 +132,6 @@ const AddMusicToPlaylistPage = ({ user }) => {
                 />
             </div>
 
-            {/* Фільтр за роком */}
             <div className="filter-group">
                 <label>Фільтрувати за роком:</label>
                 <input
@@ -149,7 +142,6 @@ const AddMusicToPlaylistPage = ({ user }) => {
                 />
             </div>
 
-            {/* Фільтр за жанром */}
             <div className="filter-group">
                 <label>Фільтрувати за жанром:</label>
                 <select multiple value={selectedGenres} onChange={handleGenreChange}>
@@ -161,7 +153,6 @@ const AddMusicToPlaylistPage = ({ user }) => {
                 </select>
             </div>
 
-            {/* Сортування */}
             <div className="filter-group">
                 <label>Сортувати за:</label>
                 <select value={sortOption} onChange={handleSortChange}>
@@ -170,7 +161,6 @@ const AddMusicToPlaylistPage = ({ user }) => {
                 </select>
             </div>
 
-            {/* Список музики */}
             {filteredFiles.length === 0 ? (
                 <p>Наразі немає завантажених файлів, що відповідають пошуковому запиту.</p>
             ) : (
@@ -202,7 +192,6 @@ const AddMusicToPlaylistPage = ({ user }) => {
                                     </Link>
                                 </div>
                             )}
-                            {/* Використовуємо кастомний програвач */}
                             <CustomAudioPlayer src={`http://localhost:8080/api/music-files/${file.id}`} />
                             <div className="file-details">
                                 {file.artist && (

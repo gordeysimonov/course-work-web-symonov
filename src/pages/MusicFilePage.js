@@ -95,12 +95,12 @@ const MusicFilePage = ({ user }) => {
             return;
         }
 
-        const updatedComment = {
-            id: editingCommentId,
-            commentText: editingCommentText,
-        };
-
-        axios.put(`http://localhost:8080/api/comments/${editingCommentId}`, updatedComment)
+        // Відправляємо тільки новий текст коментаря
+        axios.put(`http://localhost:8080/api/comments/${editingCommentId}`, editingCommentText, {
+            headers: {
+                'Content-Type': 'text/plain' // Вказуємо тип контенту як звичайний текст
+            }
+        })
             .then((response) => {
                 setComments(comments.map(comment =>
                     comment.id === editingCommentId ? { ...comment, commentText: editingCommentText } : comment
@@ -109,6 +109,7 @@ const MusicFilePage = ({ user }) => {
                 setEditingCommentText('');
             })
             .catch((error) => {
+                console.error("Error updating comment", error);
             });
     };
 
@@ -192,8 +193,8 @@ const MusicFilePage = ({ user }) => {
                                         <div>
                                             <p><strong><Link
                                                 to={user?.sub === comment.userId.id.toString()
-                                                    ? '/profile'  // Якщо це поточний користувач
-                                                    : `/user-profile/${comment.userId.id}`}  // Якщо це інший користувач
+                                                    ? '/profile'
+                                                    : `/user-profile/${comment.userId.id}`}
                                             >
                                                 {comment.userId.name}
                                             </Link>

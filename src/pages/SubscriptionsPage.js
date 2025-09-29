@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import '../css/SubscriptionsPage.css'; // Імпорт стилів
+import '../css/SubscriptionsPage.css';
 
 const SubscriptionsPage = ({ user }) => {
-    const [subscriptions, setSubscriptions] = useState([]);  // Підписки користувача
-    const [allUsers, setAllUsers] = useState([]);             // Всі користувачі
-    const [filteredSubscriptions, setFilteredSubscriptions] = useState([]); // Відфільтровані підписки
+    const [subscriptions, setSubscriptions] = useState([]);
+    const [allUsers, setAllUsers] = useState([]);
+    const [filteredSubscriptions, setFilteredSubscriptions] = useState([]);
 
     useEffect(() => {
         if (!user) return;
-
-        // Отримання всіх користувачів
         axios.get('http://localhost:8080/api/users')
             .then((response) => {
                 setAllUsers(response.data);
@@ -20,7 +18,6 @@ const SubscriptionsPage = ({ user }) => {
                 console.error('Error fetching users:', error);
             });
 
-        // Отримання підписок користувача
         axios.get(`http://localhost:8080/api/subscriptions/subscriptions/${user.sub}`)
             .then((response) => {
                 setSubscriptions(response.data);
@@ -30,13 +27,11 @@ const SubscriptionsPage = ({ user }) => {
             });
     }, [user]);
 
-    // Фільтрація користувачів на основі підписок
     useEffect(() => {
         if (subscriptions.length === 0 || allUsers.length === 0) return;
 
-        // Фільтрація користувачів, на яких є підписки
         const subscribedUsers = allUsers.filter(u =>
-            subscriptions.some(sub => sub.subscribedTo.id === u.id)  // Перевірка, чи є підписка на користувача
+            subscriptions.some(sub => sub.subscribedTo.id === u.id)
         );
         setFilteredSubscriptions(subscribedUsers);
     }, [subscriptions, allUsers]);

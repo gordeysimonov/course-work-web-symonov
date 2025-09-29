@@ -21,14 +21,14 @@
     margin: 0 auto;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     border-radius: 16px;
-    border: 5px solid;  /* Визначаємо товщину бордеру */
-    border-image: linear-gradient(45deg, #bb86fc, #03dac6) 1;  /* Зелено-фіолетовий градієнт */
+    border: 5px solid;
+    border-image: linear-gradient(45deg, #bb86fc, #03dac6) 1;
 }
 
 .music-title {
     font-size: 24px;
     font-weight: bold;
-    color: #fff;  /* Світлий колір тексту */
+    color: #fff;
 }
 
 .cover-image {
@@ -51,14 +51,14 @@
     resize: none;
     margin-top: 10px;
     font-size: 16px;
-    background-color: #333; /* Темний фон для textarea */
-    color: #fff;  /* Світлий текст */
+    background-color: #333;
+    color: #fff;
 }
 
 .comment-button {
     margin-top: 10px;
     padding: 10px 20px;
-    background-color: #1e3a8a; /* Темно-синій фон для кнопок */
+    background-color: #1e3a8a;
     color: white;
     border: none;
     border-radius: 5px;
@@ -67,7 +67,7 @@
 }
 
 .comment-button:hover {
-    background-color: #2563eb; /* Світліший синій при наведенні */
+    background-color: #2563eb;
 }
 
 .error {
@@ -85,14 +85,14 @@
     margin-bottom: 10px;
     padding: 20px;
     padding-bottom: 30px;
-    background-color: #333;  /* Темний фон для коментарів */
+    background-color: #333;
     border-radius: 5px;
-    color: #fff;  /* Світлий текст */
+    color: #fff;
 }
 
 .comment-date {
     font-size: 12px;
-    color: #bbb;  /* Світло-сірий текст для дати */
+    color: #bbb;
 }
 
 .edit-button,
@@ -106,20 +106,20 @@
 }
 
 .edit-button {
-    background-color: #f59e0b;  /* Оранжевий для редагування */
+    background-color: #f59e0b;
     margin-right: 20px;
 }
 
 .delete-button {
-    background-color: #f44336; /* Червоний для видалення */
+    background-color: #f44336;
 }
 
 .edit-button:hover {
-    background-color: #e87e0a;  /* Темніший оранжевий при наведенні */
+    background-color: #e87e0a;
 }
 
 .delete-button:hover {
-    background-color: #d32f2f; /* Темніший червоний при наведенні */
+    background-color: #d32f2f;
 }
 
 .music-file-page .content a {

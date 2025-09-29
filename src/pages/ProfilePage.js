@@ -17,8 +17,6 @@ const ProfilePage = ({ user }) => {
 
     useEffect(() => {
         if (!user) return;
-
-        // Отримання даних профілю
         axios.get(`http://localhost:8080/api/users/${user.sub}`)
             .then((response) => {
                 setProfileData(response.data);
@@ -29,7 +27,6 @@ const ProfilePage = ({ user }) => {
                 console.error('Error fetching user profile', error);
             });
 
-        // Отримання музики користувача
         axios
             .get(`http://localhost:8080/api/music-files`)
             .then((response) => {
@@ -40,7 +37,6 @@ const ProfilePage = ({ user }) => {
                 console.error('Error fetching music files:', error);
             });
 
-        // Отримання плейлистів користувача
         axios.get(`http://localhost:8080/api/playlists/user/${user.sub}`)
             .then((response) => {
                 setPlaylists(response.data);
@@ -49,7 +45,6 @@ const ProfilePage = ({ user }) => {
                 console.error('Error fetching playlists:', error);
             });
 
-        // Отримання кількості підписок
         axios.get(`http://localhost:8080/api/subscriptions/${user.sub}/subscriptions`)
             .then((response) => {
                 setSubscriptionsCount(response.data);
@@ -58,7 +53,6 @@ const ProfilePage = ({ user }) => {
                 console.error('Error fetching subscriptions count:', error);
             });
 
-        // Отримання кількості підписників
         axios.get(`http://localhost:8080/api/subscriptions/${user.sub}/followers`)
             .then((response) => {
                 setFollowersCount(response.data);
@@ -142,14 +136,6 @@ const ProfilePage = ({ user }) => {
         }
     };
 
-    const getProfilePicture = () => {
-        if (profileData?.profilePicture) {
-            return `data:image/jpeg;base64,${profileData.profilePicture}`;
-        } else {
-            return 'path/to/default/profile-picture.jpg'; // Шлях до дефолтного фото
-        }
-    };
-
     if (!user) {
         return <p>Будь ласка, увійдіть до свого акаунту.</p>;
     }
@@ -178,8 +164,11 @@ const ProfilePage = ({ user }) => {
                     <div className="profile-picture-section">
                         <h3>Фото профілю</h3>
                         <img
-                            src={getProfilePicture()}
+                            src={`http://localhost:8080/api/users/${profileData.id}/image`}
                             alt="Profile"
+                            width="100"
+                            height="100"
+                            className="profile-picture"
                         />
                         <input type="file" onChange={handleProfilePictureChange}/>
                         <button onClick={handleSaveProfilePicture}>Зберегти нове фото</button>
@@ -197,7 +186,6 @@ const ProfilePage = ({ user }) => {
                     </div>
 
                     <h2>Мої музичні файли</h2>
-                    {/* Музика */}
                     <div>
                         {musicFiles.length === 0 ? (
                             <p>Немає завантажених файлів.</p>
@@ -206,13 +194,11 @@ const ProfilePage = ({ user }) => {
                                 {musicFiles.map((file) => (
                                     <li key={file.id} className="music-file-item">
                                         <div className="file-grid">
-                                            {/* Перша частина (Назва та хто опублікував) */}
-                                            <div className="file-title-container">
+                                            <div>
                                                 <strong>{file.title}</strong> від{' '}
                                                 <strong>{file.uploadedBy?.name || 'Анонім'}</strong>
                                             </div>
 
-                                            {/* Друга частина (Обкладинка) */}
                                             {file.coverImage && (
                                                 <div className="file-cover-container">
                                                     <Link to={`/music-file/${file.id}`}>
@@ -225,13 +211,11 @@ const ProfilePage = ({ user }) => {
                                                 </div>
                                             )}
 
-                                            {/* Третя частина (Кастомний програвач) */}
                                             <div className="audio-player-container">
                                                 <CustomAudioPlayer
                                                     src={`http://localhost:8080/api/music-files/${file.id}`}/>
                                             </div>
 
-                                            {/* Четверта частина (Інформація про файл) */}
                                             <div className="file-info-container">
                                                 {file.artist && <p><strong>Виконавець:</strong> {file.artist}</p>}
                                                 {file.genres?.length > 0 && (
@@ -248,7 +232,6 @@ const ProfilePage = ({ user }) => {
                                             </div>
                                         </div>
 
-                                        {/* Кнопки редагування та видалення внизу блоку */}
                                         {user && (user.roles.includes('ADMIN') || Number(user.sub) === file.uploadedBy?.id) && (
                                             <div className="file-actions">
                                                 <Link to={`/edit/${file.id}`} state={{user}}>
@@ -263,7 +246,6 @@ const ProfilePage = ({ user }) => {
                         )}
                     </div>
 
-                    {/* Плейлисти */}
                     <div className="playlists-section">
                         <h3>Мої плейлисти</h3>
                         <Link to="/create-playlist">

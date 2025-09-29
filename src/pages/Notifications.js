@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios'; // Для виклику API
+import axios from 'axios';
 import '../css/Notifications.css';
 
 const Notifications = ({ user }) => {
     const [notifications, setNotifications] = useState([]);
     const [filteredNotifications, setFilteredNotifications] = useState([]);
-    const [filter, setFilter] = useState('all'); // Стан для фільтру (all, unread)
+    const [filter, setFilter] = useState('all');
 
-    // Отримуємо повідомлення
     useEffect(() => {
         if (user) {
             axios.get(`http://localhost:8080/api/notifications/user/${user.sub}`)
                 .then(response => {
                     const sortedNotifications = response.data.sort((a, b) => {
-                        return new Date(b.dateReceiving) - new Date(a.dateReceiving); // Сортуємо за датою
+                        return new Date(b.dateReceiving) - new Date(a.dateReceiving);
                     });
                     setNotifications(sortedNotifications);
-                    setFilteredNotifications(sortedNotifications); // Встановлюємо відфільтровані повідомлення
+                    setFilteredNotifications(sortedNotifications);
                 })
                 .catch(error => {
                     console.error("Помилка при отриманні повідомлень:", error);
@@ -24,17 +23,15 @@ const Notifications = ({ user }) => {
         }
     }, [user]);
 
-    // Фільтруємо повідомлення
     const handleFilterChange = (event) => {
         setFilter(event.target.value);
         if (event.target.value === 'unread') {
             setFilteredNotifications(notifications.filter(notification => notification.status === 'unread'));
         } else {
-            setFilteredNotifications(notifications); // Показуємо всі повідомлення
+            setFilteredNotifications(notifications);
         }
     };
 
-    // Позначити все як прочитане
     const markAllAsRead = () => {
         axios.put(`http://localhost:8080/api/notifications/mark-all-read/${user.sub}`)
             .then(response => {
@@ -52,7 +49,6 @@ const Notifications = ({ user }) => {
             });
     };
 
-    // Позначити одне повідомлення як прочитане
     const markAsRead = (id) => {
         axios.put(`http://localhost:8080/api/notifications/mark-read/${id}`)
             .then(response => {
@@ -76,7 +72,6 @@ const Notifications = ({ user }) => {
         <div className="notifications-container">
             <h2>Ваші повідомлення</h2>
 
-            {/* Фільтрація повідомлень */}
             <div>
                 <label>Фільтрувати повідомлення: </label>
                 <select value={filter} onChange={handleFilterChange}>
@@ -85,7 +80,6 @@ const Notifications = ({ user }) => {
                 </select>
             </div>
 
-            {/* Кнопка позначити всі як прочитане */}
             <button onClick={markAllAsRead}>Позначити все, як прочитане</button>
 
             <ul>
@@ -94,16 +88,14 @@ const Notifications = ({ user }) => {
                         <li
                             key={notification.id}
                             style={{
-                                fontWeight: notification.status === 'unread' ? 'bold' : 'normal',  // Робимо текст жирним для непрочитаних повідомлень
-                                color: notification.status === 'unread' ? 'red' : 'black'  // Червоний колір для непрочитаних повідомлень
+                                fontWeight: notification.status === 'unread' ? 'bold' : 'normal',
+                                color: notification.status === 'unread' ? 'red' : 'black'
                             }}
                         >
                             <div>
-                                {/* Використовуємо dangerouslySetInnerHTML для вставки HTML контенту */}
                                 <p dangerouslySetInnerHTML={{ __html: notification.notificationText }}></p>
                                 <small>{new Date(notification.dateReceiving).toLocaleString()}</small>
                             </div>
-                            {/* Кнопка для кожного повідомлення "Позначити як прочитане" */}
                             {notification.status === 'unread' && (
                                 <button onClick={() => markAsRead(notification.id)}>Позначити як прочитане</button>
                             )}

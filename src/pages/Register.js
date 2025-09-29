@@ -6,10 +6,12 @@ import '../css/Login.css';
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [name, setName] = useState('');
     const [nameError, setNameError] = useState('');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [confirmPasswordError, setConfirmPasswordError] = useState('');
     const navigate = useNavigate();
 
     const validatePassword = (password) => {
@@ -25,14 +27,19 @@ const Register = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Очищаємо попередні помилки
         setNameError('');
         setEmailError('');
         setPasswordError('');
+        setConfirmPasswordError('');
 
         const passwordValidationResult = validatePassword(password);
         if (passwordValidationResult) {
             setPasswordError(passwordValidationResult);
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setConfirmPasswordError('Паролі не співпадають.');
             return;
         }
 
@@ -105,6 +112,17 @@ const Register = () => {
                             className={`input-field ${passwordError ? 'input-error' : ''}`}
                         />
                         {passwordError && <p className="error-message">{passwordError}</p>}
+                    </div>
+                    <div className="form-group">
+                        <input
+                            type="password"
+                            placeholder="Підтвердьте пароль"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                            className={`input-field ${confirmPasswordError ? 'input-error' : ''}`}
+                        />
+                        {confirmPasswordError && <p className="error-message">{confirmPasswordError}</p>}
                     </div>
                     <button type="submit" className="submit-button">Зареєструватися</button>
 

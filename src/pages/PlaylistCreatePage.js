@@ -12,14 +12,13 @@ const PlaylistCreatePage = ({ user }) => {
     };
 
     const handleCreatePlaylist = () => {
-        // Створюємо новий плейлист з тільки назвою
         const newPlaylist = new URLSearchParams();
-        newPlaylist.append('name', playlistName);  // Додаємо параметр 'name'
-        newPlaylist.append('userId', user.sub);    // Додаємо параметр 'userId'
+        newPlaylist.append('name', playlistName);
+        newPlaylist.append('userId', user.sub);
 
         axios.post('http://localhost:8080/api/playlists', newPlaylist)
             .then((response) => {
-                navigate('/profile'); // Перенаправляємо на сторінку профілю
+                navigate('/profile');
             })
             .catch((error) => {
                 console.error('Error creating playlist', error);
