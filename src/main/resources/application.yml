@@ -22,5 +22,3 @@ spring:
     resources:
       static-locations:
         - "classpath:/static/"
-        - "file:uploads/cover-images/"
-

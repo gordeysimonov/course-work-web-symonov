@@ -52,14 +52,12 @@ public class CommentService {
         return commentRepository.save(comment); // Зберігаємо коментар у базі даних
     }
 
-    // Редагування коментаря
     public Comment updateComment(Long commentId, String newCommentText) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("Comment not found"));
         comment.setCommentText(newCommentText);
         return commentRepository.save(comment);
     }
 
-    // Видалення коментаря та всіх його відповідей
     @Transactional
     public void deleteComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("Comment not found"));

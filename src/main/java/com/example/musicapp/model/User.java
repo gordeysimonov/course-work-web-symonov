@@ -5,17 +5,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,9 +21,7 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    private byte[] profilePicture;
+    private String profilePicturePath;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime registrationDate;
@@ -90,25 +84,12 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
-
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public byte[] getProfilePicture() {
-        return profilePicture != null ? profilePicture : new byte[0];
-    }
-
-    public void setProfilePicture(byte[] profilePicture) {
-        this.profilePicture = profilePicture;
     }
 
     public LocalDateTime getRegistrationDate() {
@@ -167,38 +148,6 @@ public class User implements UserDetails {
         this.userNotificationsList = userNotificationsList;
     }
 
-    // Реалізація методів UserDetails
-
-    @Override
-    @JsonIgnore
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isEnabled() {
-        return true;
-    }
-
     public Set<Playlist> getUserPlaylistsList() {
         return userPlaylistsList;
     }
@@ -206,5 +155,15 @@ public class User implements UserDetails {
     public void setUserPlaylistsList(Set<Playlist> userPlaylistsList) {
         this.userPlaylistsList = userPlaylistsList;
     }
+
+    public String getProfilePicturePath() {
+        return profilePicturePath;
+    }
+
+    public void setProfilePicturePath(String profilePicturePath) {
+        this.profilePicturePath = profilePicturePath;
+    }
+
+    // Реалізація методів UserDetails
 
 }

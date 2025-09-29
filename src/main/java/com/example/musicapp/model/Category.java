@@ -10,14 +10,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;  // Назва категорії
+    private String name;
     private String description;
 
     private String categoryImagePath;
@@ -27,7 +26,6 @@ public class Category {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<MusicFile> musicFiles = new HashSet<>();
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

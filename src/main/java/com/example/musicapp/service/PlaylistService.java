@@ -27,13 +27,11 @@ public class PlaylistService {
 
     @Transactional(readOnly = true)
     public List<Playlist> getPlaylistsByUserId(Long userId) {
-        // Репозиторій виконує пошук за ID користувача
         return playlistRepository.findByUserId(userId);
     }
 
     @Transactional(readOnly = true)
     public List<MusicFile> getMusicFilesByPlaylistId(Long playlistId) {
-        // Отримуємо музичні файли для певного плейлиста
         return musicFileRepository.findByPlaylistsId(playlistId);
     }
 
@@ -41,19 +39,16 @@ public class PlaylistService {
     public Optional<Playlist> getPlaylistById(Long playlistId) {
         return playlistRepository.findById(playlistId);
     }
-
+/*
     public Playlist updatePlaylistName(Long playlistId, String newName) {
-        // Знаходимо плейлист за ID
         Playlist playlist = playlistRepository.findById(playlistId)
                 .orElseThrow(() -> new RuntimeException("Playlist not found"));
 
-        // Оновлюємо назву
         playlist.setName(newName);
 
-        // Зберігаємо оновлений плейлист
         return playlistRepository.save(playlist);
     }
-
+*/
     public void deletePlaylist(Long id) {
         playlistRepository.deleteById(id);
     }

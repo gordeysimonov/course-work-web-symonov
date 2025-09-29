@@ -42,7 +42,7 @@ public class TagService {
             Tag tag = tagRepository.findByTagName(tagName).orElseGet(() -> {
                 Tag newTag = new Tag();
                 newTag.setTagName(tagName);
-                return tagRepository.save(newTag); // Збереження нового тегу
+                return tagRepository.save(newTag);
             });
             tags.add(tag);
         }
@@ -50,7 +50,7 @@ public class TagService {
         for (Tag tag : tags) {
             musicFile.getTags().add(tag);
         }
-        musicFileRepository.save(musicFile); // Збереження зв'язку
+        musicFileRepository.save(musicFile);
     }
 
 }

@@ -38,13 +38,11 @@ public class SubscriptionController {
         return ResponseEntity.ok(followersCount);
     }
 
-    // Підписка користувача на іншого
     @PostMapping("/{subscriberId}/{subscribedToId}")
     public ResponseEntity<Subscription> subscribe(
             @PathVariable Long subscriberId,
             @PathVariable Long subscribedToId) {
         try {
-            // Викликаємо метод підписки
             Subscription subscription = subscriptionService.subscribe(subscriberId, subscribedToId);
             return ResponseEntity.ok(subscription);
         } catch (IllegalArgumentException e) {
@@ -52,7 +50,6 @@ public class SubscriptionController {
         }
     }
 
-    // Скасування підписки
     @DeleteMapping("/{subscriberId}/{subscribedToId}")
     public ResponseEntity<Void> cancelSubscription(
             @PathVariable Long subscriberId,
@@ -65,7 +62,6 @@ public class SubscriptionController {
         }
     }
 
-    // Отримати всі підписки користувача
     @GetMapping("/subscriptions/{subscriberId}")
     public ResponseEntity<List<Subscription>> getSubscriptions(
             @PathVariable Long subscriberId) {
@@ -73,7 +69,6 @@ public class SubscriptionController {
         return ResponseEntity.ok(subscriptions);
     }
 
-    // Отримати всіх підписників користувача
     @GetMapping("/subscribers/{subscribedToId}")
     public ResponseEntity<List<Subscription>> getSubscribers(
             @PathVariable Long subscribedToId) {

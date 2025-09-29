@@ -39,16 +39,15 @@ public class NotificationService {
         for (Notification notification : notifications) {
             notification.setStatus("read");
         }
-        notificationRepository.saveAll(notifications);  // Зберігаємо всі оновлені повідомлення
+        notificationRepository.saveAll(notifications);
     }
 
     @Transactional
-    // Позначити конкретне повідомлення як прочитане
     public void markAsRead(Long id) {
         Notification notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Повідомлення не знайдено!"));
         notification.setStatus("read");
-        notificationRepository.save(notification);  // Оновлюємо конкретне повідомлення
+        notificationRepository.save(notification);
     }
 
     public void deleteNotification(Long id) {

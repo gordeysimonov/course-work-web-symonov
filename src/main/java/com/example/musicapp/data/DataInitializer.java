@@ -51,7 +51,7 @@ public class DataInitializer implements ApplicationRunner {
         roles1.add("ADMIN");
         user1.setRoles(roles1);
         user1.setRegistrationDate(LocalDateTime.parse("2024-12-01T12:34:56"));
-        user1.setProfilePicture(Files.readAllBytes(Paths.get("src/main/resources/static/images/hordii.jpg")));
+        user1.setProfilePicturePath("src/main/resources/static/images/default-profile.jpg");
         userRepository.save(user1);
 
         User user2 = new User();
@@ -62,19 +62,8 @@ public class DataInitializer implements ApplicationRunner {
         roles2.add("USER");
         user2.setRoles(roles2);
         user2.setRegistrationDate(LocalDateTime.parse("2024-12-05T17:21:21"));
-        user2.setProfilePicture(Files.readAllBytes(Paths.get("src/main/resources/static/images/hanna.jpg")));
+        user2.setProfilePicturePath("src/main/resources/static/images/hannazuerst.jpg");
         userRepository.save(user2);
-
-        User user3 = new User();
-        user3.setName("George");
-        user3.setEmail("gmail@gmail.com");
-        user3.setPassword(passwordEncoder.encode("Veter111"));
-        Set<String> roles3 = new HashSet<>();
-        roles3.add("USER");
-        user3.setRoles(roles3);
-        user3.setRegistrationDate(LocalDateTime.parse("2024-12-05T17:21:21"));
-        user3.setProfilePicture(Files.readAllBytes(Paths.get("src/main/resources/static/images/default-profile.jpg")));
-        userRepository.save(user3);
 
         Genre genre1 = new Genre();
         genre1.setGenre("Rock");

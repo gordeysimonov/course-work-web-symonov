@@ -77,7 +77,6 @@ public class MusicFile {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Comment> musicFileCommentList;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

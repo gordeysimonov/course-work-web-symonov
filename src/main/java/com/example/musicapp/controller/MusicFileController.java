@@ -17,8 +17,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.SocketException;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -49,15 +53,47 @@ public class MusicFileController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<byte[]> getMusicFile(@PathVariable Long id) {
+    public ResponseEntity<StreamingResponseBody> getMusicFile(@PathVariable Long id,
+                                                              @RequestHeader(value = HttpHeaders.RANGE) String range) {
         Optional<MusicFile> musicFileOptional = musicFileService.getMusicFileById(id);
 
         if (musicFileOptional.isPresent()) {
             MusicFile musicFile = musicFileOptional.get();
 
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_TYPE, musicFile.getContentType())
-                    .body(musicFile.getFileData());
+            String[] rangeParts = range.split("=")[1].split("-");
+            final long[] start = {Long.parseLong(rangeParts[0])};
+            long end = (rangeParts.length > 1) ? Long.parseLong(rangeParts[1]) : musicFile.getFileData().length;
+
+            StreamingResponseBody stream = out -> {
+                try (InputStream inputStream = new ByteArrayInputStream(musicFile.getFileData())) {
+                    byte[] buffer = new byte[8192];
+                    inputStream.skip(start[0]);
+                    int bytesRead;
+                    while (start[0] < end && (bytesRead = inputStream.read(buffer)) != -1) {
+                        out.write(buffer, 0, Math.min(bytesRead, (int) (end - start[0])));
+                        start[0] += bytesRead;
+
+                        if (Thread.interrupted()) {
+                            break;
+                        }
+                    }
+                } catch (IOException e) {
+                    if (e instanceof SocketException) {
+                        System.out.println("Connection closed by client");
+                    } else {
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_TYPE, musicFile.getContentType());
+            headers.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(end - start[0]));
+            headers.add(HttpHeaders.CONTENT_RANGE, "bytes " + start[0] + "-" + (end - 1) + "/" + musicFile.getFileData().length);
+
+            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
+                    .headers(headers)
+                    .body(stream);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -96,16 +132,13 @@ public class MusicFileController {
                                                      @RequestParam("genreIds") List<Long> genreIds,
                                                      @RequestParam("year") int year) {
         try {
-            // Перевірка користувача
             Optional<User> userOptional = userService.findById(userId);
             if (userOptional.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
             }
 
-            // Отримання жанрів
             Set<Genre> genres = genreService.findGenresByIds(genreIds);
 
-            // Створення нового MusicFile об'єкта
             MusicFile musicFile = new MusicFile();
             musicFile.setTitle(title);
             musicFile.setArtist(artist);
@@ -118,7 +151,6 @@ public class MusicFileController {
             musicFile.setCategories(new HashSet<>());
             musicFile.setPlaylists(new HashSet<>());
 
-            // Виклик сервісу для збереження файлу
             MusicFile savedMusicFile = musicFileService.createMusicFile(musicFile);
 
             // Створення повідомлення для підписників
@@ -134,8 +166,7 @@ public class MusicFileController {
                 notification.setNotificationText(notificationText);
                 notification.setStatus("unread");
                 notification.setDateReceiving(LocalDateTime.now());
-
-                // Збереження повідомлення в БД
+                // Збереження повідомлення
                 notificationRepository.save(notification);
             }
 
@@ -155,7 +186,6 @@ public class MusicFileController {
             @RequestHeader("userId") Long userId,
             @RequestHeader("roles") String roles) {
         try {
-            // Отримуємо набір ролей з заголовка
             Set<String> userRoles = Arrays.stream(roles.split(","))
                     .collect(Collectors.toSet());
 
@@ -179,7 +209,6 @@ public class MusicFileController {
             @RequestHeader("userId") Long userId,
             @RequestHeader("roles") String roles) {
         try {
-            // Отримуємо набір ролей з заголовка
             Set<String> userRoles = Arrays.stream(roles.split(","))
                     .collect(Collectors.toSet());
 

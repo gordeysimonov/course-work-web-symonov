@@ -21,8 +21,8 @@ public class CategoryUpdaterService {
     @Autowired
     private MusicFileService musicFileService;
 
-    // Оновлення категорії "LAST WEEK" щохвилини
-    @Scheduled(cron = "0 0/15 * * * *") // Кожні 15 хвилин оновлюємо!
+    // Оновлення категорії "LAST WEEK"
+    @Scheduled(cron = "0 0/15 * * * *") // Кожні 15 хвилин
     @Transactional
     public void updateLastWeekCategory() {
         Category lastWeekCategory = categoryRepository.findByName("LAST WEEK");
@@ -30,10 +30,9 @@ public class CategoryUpdaterService {
             Set<MusicFile> oldFiles = new HashSet<>(lastWeekCategory.getMusicFiles());
             for (MusicFile file : oldFiles) {
                 lastWeekCategory.getMusicFiles().remove(file);
-                file.getCategories().remove(categoryRepository.findByName("LAST WEEK")); // Виклик репозиторія для видалення
+                file.getCategories().remove(categoryRepository.findByName("LAST WEEK"));
             }
 
-            // Додавання нових файлів
             Set<MusicFile> newFilesForLastWeek = new HashSet<>();
             for (MusicFile file : musicFileService.getAllMusicFiles()) {
                 if (file.getDownloadDate().isAfter(LocalDateTime.now().minusWeeks(1))) {
@@ -43,7 +42,7 @@ public class CategoryUpdaterService {
             }
             lastWeekCategory.getMusicFiles().addAll(newFilesForLastWeek);
 
-            categoryRepository.save(lastWeekCategory); // Збереження змін
+            categoryRepository.save(lastWeekCategory);
         }
     }
 

@@ -42,7 +42,7 @@ public class AuthController {
             error.put("message", "wrong password");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
         }
-        User newUser = userService.registerUser(user);
+        userService.registerUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "User created successfully"));
     }
 

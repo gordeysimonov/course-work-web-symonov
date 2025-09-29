@@ -26,28 +26,23 @@ public class CategoryController {
     @Autowired
     private MusicFileService musicFileService;
 
-    // Отримати категорію за id
     @GetMapping("/{id}")
     public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
         Category category = categoryService.getCategoryById(id);
-        // Додаємо музичні файли для цієї категорії
         List<MusicFile> musicFiles = musicFileService.getMusicFilesByCategory(id);
-        category.setMusicFiles(new HashSet<>(musicFiles));  // Встановлюємо музику для цієї категорії
+        category.setMusicFiles(new HashSet<>(musicFiles));
         return ResponseEntity.ok(category);
     }
 
-    // Отримати всі категорії
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories() {
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(categories);
     }
 
-    // Завантажити зображення категорії
     @GetMapping("/{id}/image")
     public ResponseEntity<byte[]> getCategoryImage(@PathVariable Long id) throws IOException {
         String imagePath = categoryService.getCategoryImagePath(id);
-        // Завантажуємо зображення з файлової системи чи іншого джерела за шляхом
         Path path = Paths.get(imagePath);
         byte[] imageBytes = Files.readAllBytes(path);
         return ResponseEntity.ok()

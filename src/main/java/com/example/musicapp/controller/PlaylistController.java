@@ -51,10 +51,7 @@ public class PlaylistController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Playlist>> getPlaylistsByUserId(@PathVariable Long userId) {
-        // Передаємо userId у сервіс
         List<Playlist> playlists = playlistService.getPlaylistsByUserId(userId);
-
-        // Повертаємо список плейлистів
         return ResponseEntity.ok(playlists);
     }
 
@@ -65,26 +62,20 @@ public class PlaylistController {
 
     @PutMapping("{playlistId}")
     public ResponseEntity<Playlist> updatePlaylistName(@PathVariable Long playlistId, @RequestBody Map<String, String> request) {
-        // Отримуємо нову назву плейлиста з поля "name"
         String newName = request.get("name");
 
-        // Знаходимо плейлист по ID
         Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
 
         if (optionalPlaylist.isEmpty()) {
-            // Якщо плейлист не знайдений, повертаємо помилку 404 Not Found
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(null); // Тіло відповіді буде порожнім
+                    .body(null);
         }
 
-        // Якщо плейлист знайдений, оновлюємо його
         Playlist playlist = optionalPlaylist.get();
         playlist.setName(newName);
 
-        // Зберігаємо оновлений плейлист
         playlistRepository.save(playlist);
 
-        // Повертаємо оновлений плейлист з HTTP статусом 200 OK
         return ResponseEntity.ok(playlist);
     }
 

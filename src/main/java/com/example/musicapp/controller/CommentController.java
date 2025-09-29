@@ -27,7 +27,6 @@ public class CommentController {
         return commentService.getCommentsByMusicFileId(musicFileId);
     }
 
-    // Додати новий коментар
     @PostMapping("/add")
     public ResponseEntity<Comment> addComment(@RequestBody CommentRequest commentRequest) {
         try {
@@ -42,14 +41,12 @@ public class CommentController {
         }
     }
 
-    // Оновити коментар
     @PutMapping("{id}")
     public ResponseEntity<String> updateComment(@PathVariable Long id, @RequestBody String newCommentText) {
         Comment updatedComment = commentService.updateComment(id, newCommentText);
         return ResponseEntity.ok(updatedComment.getCommentText());
     }
 
-    // Видалити коментар
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
         commentService.deleteComment(id);

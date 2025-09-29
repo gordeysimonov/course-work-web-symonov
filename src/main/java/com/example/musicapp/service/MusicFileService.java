@@ -40,27 +40,22 @@ public class MusicFileService {
     }
 
     public MusicFile createMusicFile(MusicFile musicFile) {
-        // Встановлюємо поточну дату завантаження
         musicFile.setDownloadDate(LocalDateTime.now());
 
-        // Перевіряємо і додаємо категорію "POP MUSIC" для файлів з жанром "Pop"
         Set<Genre> genres = musicFile.getGenres();
 
-        // Отримуємо категорії безпосередньо з repository
         Category popCategory = categoryRepository.getById(1L);
 
         if (genres.stream().anyMatch(genre -> "Pop".equals(genre.getGenre()))) {
             musicFile.getCategories().add(popCategory);
         }
 
-        // Перевіряємо і додаємо категорію "LAST WEEK" для файлів, завантажених за останній тиждень
         Category lastWeekCategory = categoryRepository.getById(2L);
 
         if (musicFile.getDownloadDate().isAfter(LocalDateTime.now().minusWeeks(1))) {
             musicFile.getCategories().add(lastWeekCategory);
         }
 
-        // Зберігаємо новий файл з категоріями
         return musicFileRepository.save(musicFile);
     }
 
@@ -71,20 +66,17 @@ public class MusicFileService {
 
     @Transactional(readOnly = true)
     public List<Comment> getCommentsForMusicFile(Long musicFileId) {
-        // Знаходимо MusicFile по ID
         MusicFile musicFile = musicFileRepository.findById(musicFileId).orElse(null);
 
         if (musicFile == null) {
-            return List.of();  // Повертаємо порожній список, якщо файл не знайдено
+            return List.of();
         }
 
-        // Для кожного коментаря в musicFileCommentList шукаємо його в репозиторії
         List<Comment> comments = new ArrayList<>();
         for (Comment comment : musicFile.getMusicFileCommentList()) {
-            // Шукаємо коментар по ID
             Comment foundComment = commentRepository.findById(comment.getId()).orElse(null);
             if (foundComment != null) {
-                comments.add(foundComment);  // Додаємо знайдений коментар
+                comments.add(foundComment);
             }
         }
 
@@ -92,16 +84,13 @@ public class MusicFileService {
     }
 
     public MusicFile updateMusicFile(Long id, String title, String artist, int year, MultipartFile coverImage, Long userId, Set<String> userRoles) throws AccessDeniedException {
-        // Отримуємо файл з бази даних
         MusicFile musicFile = musicFileRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Файл не знайдено."));
 
-        // Перевіряємо доступ: власник файлу або адміністратор
         if (!userRoles.contains("ADMIN") && !musicFile.getUploadedBy().getId().equals(userId)) {
             throw new AccessDeniedException("Ви не маєте доступу до цього файлу.");
         }
 
-        // Оновлюємо поля
         if (title != null) {
             musicFile.setTitle(title);
         }
@@ -126,19 +115,16 @@ public class MusicFileService {
     public void deleteMusicFile(Long id, Long userId, Set<String> userRoles) throws AccessDeniedException, EntityNotFoundException {
         MusicFile musicFile = musicFileRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Файл не знайдено"));
 
-        // Перевірка доступу: адміністратор або власник файлу
         if (!userRoles.contains("ADMIN") && !musicFile.getUploadedBy().getId().equals(userId)) {
             throw new AccessDeniedException("У вас немає прав видаляти цей файл.");
         }
 
-        // Очищення зв'язків перед видаленням
         musicFile.setGenres(new HashSet<>());
         musicFile.setTags(new HashSet<>());
         musicFile.setCategories(new HashSet<>());
         musicFile.setPlaylists(new HashSet<>());
         musicFileRepository.save(musicFile);
 
-        // Видалення файлу
         musicFileRepository.delete(musicFile);
     }
 

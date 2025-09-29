@@ -27,8 +27,6 @@ public class Comment {
     @JsonIgnore
     private MusicFile musicFileId;
 
-    // Getters and setters
-
     public Long getId() {
         return id;
     }

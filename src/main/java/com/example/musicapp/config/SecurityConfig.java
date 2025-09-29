@@ -17,11 +17,10 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeRequests()
                 .requestMatchers("/login", "/register", "/api/users/**", "/api/music-files/**", "/api/genres/**", "/api/music-files/user/**", "/api/categories/**", "/api/playlists/**", "/api/playlists/user/**", "/api/comments/**", "/api/subscriptions/**", "/api/notifications/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN") // Доступ лише для адміністраторів
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().disable();
-
         return http.build();
     }
 
@@ -30,5 +29,3 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
-
-

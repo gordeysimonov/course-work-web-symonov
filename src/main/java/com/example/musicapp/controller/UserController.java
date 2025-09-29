@@ -3,11 +3,15 @@ package com.example.musicapp.controller;
 import com.example.musicapp.model.User;
 import com.example.musicapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -27,7 +31,6 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    // Отримання профілю користувача за ID
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) {
         return userService.findById(id).orElse(null);
@@ -38,9 +41,18 @@ public class UserController {
         return userService.updateProfilePicture(id, file);
     }
 
+    @GetMapping("/{id}/image")
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable Long id) throws IOException {
+        String imagePath = userService.getProfilePicture(id);
+        Path path = Paths.get(imagePath);
+        byte[] imageBytes = Files.readAllBytes(path);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(imageBytes);
+    }
+
     @PutMapping("/{userId}")
     public ResponseEntity<User> updateUser(@PathVariable String userId, @RequestBody User updatedUser) {
-        // Логіка для оновлення даних користувача
         User user = userService.updateUser(userId, updatedUser);
         return ResponseEntity.ok(user);
     }

@@ -37,10 +37,9 @@ public class SubscriptionService {
     @Transactional(readOnly = true)
     public boolean isSubscribed(Long subscriberId, Long subscribedToId) {
         Optional<Subscription> subscription = subscriptionRepository.findBySubscriber_IdAndSubscribedTo_Id(subscriberId, subscribedToId);
-        return subscription.isPresent();  // Повертає true, якщо підписка існує, інакше false
+        return subscription.isPresent();
     }
 
-    // Метод для підписки користувача на іншого користувача
     @Transactional
     public Subscription subscribe(Long subscriberId, Long subscribedToId) {
         Optional<User> subscriberOptional = userRepository.findById(subscriberId);
@@ -53,7 +52,6 @@ public class SubscriptionService {
         User subscriber = subscriberOptional.get();
         User subscribedTo = subscribedToOptional.get();
 
-        // Перевірка чи не підписаний вже
         Optional<Subscription> existingSubscription = subscriptionRepository
                 .findBySubscriberIdAndSubscribedToId(subscriberId, subscribedToId);
 
@@ -61,35 +59,28 @@ public class SubscriptionService {
             throw new IllegalArgumentException("Ви вже підписані на цього користувача");
         }
 
-        // Створення нової підписки
         Subscription subscription = new Subscription();
         subscription.setSubscriber(subscriber);
         subscription.setSubscribedTo(subscribedTo);
         subscription.setSubscriptionDate(LocalDateTime.now());
 
-        // Збереження підписки в БД
         Subscription savedSubscription = subscriptionRepository.save(subscription);
 
-        // Створення повідомлення для користувача, на якого підписалися
         createSubscriptionNotification(subscriber, subscribedTo);
 
         return savedSubscription;
     }
 
-    // Метод для створення повідомлення при підписці
     private void createSubscriptionNotification(User subscriber, User subscribedTo) {
-        // Створення повідомлення
         Notification notification = new Notification();
         notification.setUserId(subscribedTo);
         notification.setNotificationText("На вас підписався <a href='/user-profile/" + subscriber.getId() + "'>" + subscriber.getName() + "</a>");
         notification.setStatus("unread");
         notification.setDateReceiving(LocalDateTime.now());
 
-        // Збереження повідомлення в БД
         notificationRepository.save(notification);
     }
 
-    // Метод для скасування підписки
     @Transactional
     public void cancelSubscription(Long subscriberId, Long subscribedToId) {
         Optional<Subscription> subscriptionOptional = subscriptionRepository
@@ -103,13 +94,11 @@ public class SubscriptionService {
     }
 
     @Transactional(readOnly = true)
-    // Метод для отримання всіх підписок користувача
     public List<Subscription> getSubscriptions(Long subscriberId) {
         return subscriptionRepository.findBySubscriberId(subscriberId);
     }
 
     @Transactional(readOnly = true)
-    // Метод для отримання всіх підписників користувача
     public List<Subscription> getSubscribers(Long subscribedToId) {
         return subscriptionRepository.findBySubscribedToId(subscribedToId);
     }

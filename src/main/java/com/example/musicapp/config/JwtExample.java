@@ -11,18 +11,6 @@ public class JwtExample {
     // Секретний ключ для підпису токену
     private static final String SECRET_KEY = "Hjsjad32hSgh3S62pA";
 
-    public static void main(String[] args) {
-        // Генерація JWT
-        String token = createJWT(0L, "user123", Collections.singleton("GUEST"));
-
-        // Виведення згенерованого токену
-        System.out.println("Generated JWT: " + token);
-
-        // Перевірка та декодування JWT
-        DecodedJWT decodedJWT = decodeJWT(token);
-        System.out.println("Decoded JWT claims: " + decodedJWT.getClaims());
-    }
-
     // Метод для створення JWT
     public static String createJWT(Long id, String username, Set<String> roles) {
         Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);  // Алгоритм для підпису

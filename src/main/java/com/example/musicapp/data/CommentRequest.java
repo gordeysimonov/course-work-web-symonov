@@ -6,7 +6,6 @@ public class CommentRequest {
     private Long userId;
     private String commentText;
 
-    // Getters and setters
     public Long getMusicFileId() {
         return musicFileId;
     }
