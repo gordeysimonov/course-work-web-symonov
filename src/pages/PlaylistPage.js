@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import '../css/MusicList.css';
-import CustomAudioPlayer from "../components/CustomAudioPlayer";
+import { PlayerContext } from '../context/PlayerContext';
 
 const PlaylistPage = ({ user }) => {
     const { playlistId } = useParams();
     const [playlistData, setPlaylistData] = useState(null);
     const [musicFiles, setMusicFiles] = useState([]);
     const [error, setError] = useState(null);
+
+    const { playPlaylist } = useContext(PlayerContext); // ✅ замість playTrack
 
     useEffect(() => {
         const fetchPlaylistData = async () => {
@@ -41,19 +43,10 @@ const PlaylistPage = ({ user }) => {
         fetchMusicFiles();
     }, [playlistId]);
 
-    const handleAddToPlaylist = async (fileId) => {
-        try {
-            await axios.post(`http://localhost:8080/api/playlists/${playlistId}/add-music/${fileId}`);
-            setMusicFiles([...musicFiles, { id: fileId }]); // Оновлюємо список пісень
-        } catch (error) {
-            console.error('Error adding music to playlist:', error);
-        }
-    };
-
     const handleRemoveFromPlaylist = async (fileId) => {
         try {
             await axios.delete(`http://localhost:8080/api/playlists/${playlistId}/remove-music/${fileId}`);
-            setMusicFiles(musicFiles.filter((file) => file.id !== fileId)); // Оновлюємо список пісень
+            setMusicFiles(musicFiles.filter((file) => file.id !== fileId));
         } catch (error) {
             console.error('Error removing music from playlist:', error);
         }
@@ -74,7 +67,7 @@ const PlaylistPage = ({ user }) => {
             <h3>Пісні цього плейлиста</h3>
             {musicFiles.length > 0 ? (
                 <ul className="music-list">
-                    {musicFiles.map((file) => (
+                    {musicFiles.map((file, index) => (
                         <li key={file.id} className="file-item">
                             <div className="file-title">
                                 <strong>{file.title}</strong>
@@ -89,6 +82,7 @@ const PlaylistPage = ({ user }) => {
                                     {file.uploadedBy?.name || 'Анонім'}
                                 </Link>
                             </div>
+
                             {file.coverImage && (
                                 <div className="file-cover">
                                     <Link to={`/music-file/${file.id}`}>
@@ -101,7 +95,25 @@ const PlaylistPage = ({ user }) => {
                                     </Link>
                                 </div>
                             )}
-                            <CustomAudioPlayer src={`http://localhost:8080/api/music-files/${file.id}`}/>
+
+                            {/* ✅ запуск плейлиста з цього треку */}
+                            <button
+                                className="play-btn"
+                                onClick={() =>
+                                    playPlaylist(
+                                        musicFiles.map(f => ({
+                                            id: f.id,
+                                            src: `http://localhost:8080/api/music-files/${f.id}`,
+                                            coverImage: f.coverImage,
+                                            title: f.title,
+                                        })),
+                                        index
+                                    )
+                                }
+                            >
+                                ▶ Play
+                            </button>
+
                             <div className="file-details">
                                 {file.artist && (
                                     <p><strong>Виконавець:</strong> {file.artist}</p>
@@ -117,7 +129,10 @@ const PlaylistPage = ({ user }) => {
                                 )}
                             </div>
 
-                            <button className="remove-button" onClick={() => handleRemoveFromPlaylist(file.id)}>
+                            <button
+                                className="remove-button"
+                                onClick={() => handleRemoveFromPlaylist(file.id)}
+                            >
                                 Видалити з плейлиста
                             </button>
                         </li>

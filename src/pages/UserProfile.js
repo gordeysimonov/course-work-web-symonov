@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
-import CustomAudioPlayer from '../components/CustomAudioPlayer'; // Імпортуємо кастомний програвач
-import '../css/UserProfile.css'; // Імпортуємо файл стилів
+import { PlayerContext } from '../context/PlayerContext'; // ✅ імпортуємо контекст
+import '../css/UserProfile.css';
 
 const UserProfile = ({ user }) => {
     const { userId } = useParams();
@@ -11,11 +11,12 @@ const UserProfile = ({ user }) => {
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [error, setError] = useState(null);
 
+    const { playTrack } = useContext(PlayerContext); // ✅ отримуємо функцію для запуску треку
+
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/users/${userId}`)
-            .then((response) => {
-                setProfileData(response.data);
-            })
+        axios
+            .get(`http://localhost:8080/api/users/${userId}`)
+            .then((response) => setProfileData(response.data))
             .catch((error) => {
                 console.error('Error fetching user profile:', error);
                 setError('Не вдалося завантажити профіль користувача.');
@@ -26,7 +27,9 @@ const UserProfile = ({ user }) => {
         axios
             .get(`http://localhost:8080/api/music-files`)
             .then((response) => {
-                const filteredFiles = response.data.filter(file => file.uploadedBy?.id === Number(userId));
+                const filteredFiles = response.data.filter(
+                    (file) => file.uploadedBy?.id === Number(userId)
+                );
                 setMusicFiles(filteredFiles);
             })
             .catch((error) => {
@@ -40,7 +43,7 @@ const UserProfile = ({ user }) => {
             axios
                 .get(`http://localhost:8080/api/subscriptions/${user.sub}/${userId}`)
                 .then((response) => {
-                    if (response.data === "Підписка існує") {
+                    if (response.data === 'Підписка існує') {
                         setIsSubscribed(true);
                     } else {
                         setIsSubscribed(false);
@@ -57,12 +60,8 @@ const UserProfile = ({ user }) => {
         if (user) {
             axios
                 .post(`http://localhost:8080/api/subscriptions/${user.sub}/${userId}`)
-                .then(() => {
-                    setIsSubscribed(true);
-                })
-                .catch((error) => {
-                    console.error('Error subscribing:', error);
-                });
+                .then(() => setIsSubscribed(true))
+                .catch((error) => console.error('Error subscribing:', error));
         }
     };
 
@@ -70,9 +69,7 @@ const UserProfile = ({ user }) => {
         if (user) {
             axios
                 .delete(`http://localhost:8080/api/subscriptions/${user.sub}/${userId}`)
-                .then(() => {
-                    setIsSubscribed(false);
-                })
+                .then(() => setIsSubscribed(false))
                 .catch((error) => {
                     console.error('Error unsubscribing:', error);
                     alert('Не вдалося відписатися.');
@@ -81,7 +78,9 @@ const UserProfile = ({ user }) => {
     };
 
     const handleDelete = (id) => {
-        const confirmDelete = window.confirm('Натисніть ще раз, щоб підтвердити видалення.');
+        const confirmDelete = window.confirm(
+            'Натисніть ще раз, щоб підтвердити видалення.'
+        );
         if (confirmDelete) {
             axios
                 .delete(`http://localhost:8080/api/music-files/${id}`, {
@@ -117,19 +116,29 @@ const UserProfile = ({ user }) => {
                             className="profile-picture"
                         />
                         <div className="profile-details">
-                            <p><strong>Ім'я:</strong> {profileData.name}</p>
-                            <p><strong>Email:</strong> {profileData.email}</p>
-                            <p><strong>Дата
-                                реєстрації:</strong> {new Date(profileData.registrationDate).toLocaleDateString()}</p>
+                            <p>
+                                <strong>Ім'я:</strong> {profileData.name}
+                            </p>
+                            <p>
+                                <strong>Email:</strong> {profileData.email}
+                            </p>
+                            <p>
+                                <strong>Дата реєстрації:</strong>{' '}
+                                {new Date(profileData.registrationDate).toLocaleDateString()}
+                            </p>
                         </div>
                     </div>
 
                     {user && user.sub !== userId && (
                         <div className="subscribe-buttons">
                             {!isSubscribed ? (
-                                <button className="subscribe-button" onClick={handleSubscribe}>Підписатися</button>
+                                <button className="subscribe-button" onClick={handleSubscribe}>
+                                    Підписатися
+                                </button>
                             ) : (
-                                <button className="unsubscribe-button" onClick={handleUnsubscribe}>Відписатися</button>
+                                <button className="unsubscribe-button" onClick={handleUnsubscribe}>
+                                    Відписатися
+                                </button>
                             )}
                         </div>
                     )}
@@ -159,35 +168,61 @@ const UserProfile = ({ user }) => {
                                             </div>
                                         )}
 
+                                        {/* ✅ кнопка Play замість локального плеєра */}
                                         <div className="audio-player-container">
-                                            <CustomAudioPlayer
-                                                src={`http://localhost:8080/api/music-files/${file.id}`}/>
+                                            <button
+                                                className="play-btn"
+                                                onClick={() =>
+                                                    playTrack({
+                                                        id: file.id,
+                                                        src: `http://localhost:8080/api/music-files/${file.id}`,
+                                                        coverImage: file.coverImage,
+                                                        title: file.title,
+                                                    })
+                                                }
+                                            >
+                                                ▶ Play
+                                            </button>
                                         </div>
 
                                         <div className="file-info-container">
-                                            {file.artist && <p><strong>Виконавець:</strong> {file.artist}</p>}
+                                            {file.artist && (
+                                                <p>
+                                                    <strong>Виконавець:</strong> {file.artist}
+                                                </p>
+                                            )}
                                             {file.genres?.length > 0 && (
                                                 <p>
-                                                    <strong>Жанри:</strong> {file.genres.map((genre) => genre.genre).join(' • ')}
+                                                    <strong>Жанри:</strong>{' '}
+                                                    {file.genres.map((genre) => genre.genre).join(' • ')}
                                                 </p>
                                             )}
                                             {file.tags?.length > 0 && (
                                                 <p>
-                                                    <strong>Теги:</strong> {file.tags.map((tag) => tag.tagName).join(' • ')}
+                                                    <strong>Теги:</strong>{' '}
+                                                    {file.tags.map((tag) => tag.tagName).join(' • ')}
                                                 </p>
                                             )}
-                                            {file.year && <p><strong>Рік:</strong> {file.year}</p>}
+                                            {file.year && (
+                                                <p>
+                                                    <strong>Рік:</strong> {file.year}
+                                                </p>
+                                            )}
                                         </div>
                                     </div>
 
-                                    {user && (user.roles.includes('ADMIN') || Number(user.sub) === file.uploadedBy?.id) && (
-                                        <div className="file-actions">
-                                            <Link to={`/edit/${file.id}`} state={{user}}>
-                                                <button>Редагувати</button>
-                                            </Link>
-                                            <button onClick={() => handleDelete(file.id)}>Видалити</button>
-                                        </div>
-                                    )}
+                                    {user &&
+                                        (user.roles.includes('ADMIN') ||
+                                            Number(user.sub) === file.uploadedBy?.id) && (
+                                            <div className="file-actions">
+                                                <Link to={`/edit/${file.id}`} state={{ user }}>
+                                                    <button>Редагувати</button>
+                                                </Link>
+                                                <button onClick={() => handleDelete(file.id)}>
+                                                    Видалити
+                                                </button>
+                                            </div>
+                                        )}
                                 </li>
                             ))}
                         </ul>

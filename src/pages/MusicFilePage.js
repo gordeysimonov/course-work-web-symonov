@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import CustomPlayer from '../components/CustomAudioPlayer'; // Імпортуємо кастомний програвач (якщо вже створений)
+import { PlayerContext } from '../context/PlayerContext'; // ✅ підключаємо глобальний плеєр
 import '../css/MusicFilePage.css';
 
 const MusicFilePage = ({ user }) => {
@@ -13,6 +13,8 @@ const MusicFilePage = ({ user }) => {
     const [error, setError] = useState('');
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editingCommentText, setEditingCommentText] = useState('');
+
+    const { playTrack } = useContext(PlayerContext); // ✅ беремо функцію для запуску треку
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/music-files')
@@ -68,7 +70,7 @@ const MusicFilePage = ({ user }) => {
                 setError('');
                 setComments([...comments, response.data]);
             })
-            .catch((error) => {
+            .catch(() => {
                 setError('Не вдалося додати коментар. Спробуйте ще раз.');
             });
     };
@@ -80,8 +82,7 @@ const MusicFilePage = ({ user }) => {
                 .then(() => {
                     setComments(comments.filter((comment) => comment.id !== commentId));
                 })
-                .catch((error) => {
-                });
+                .catch(() => {});
         }
     };
 
@@ -95,13 +96,10 @@ const MusicFilePage = ({ user }) => {
             return;
         }
 
-        // Відправляємо тільки новий текст коментаря
         axios.put(`http://localhost:8080/api/comments/${editingCommentId}`, editingCommentText, {
-            headers: {
-                'Content-Type': 'text/plain' // Вказуємо тип контенту як звичайний текст
-            }
+            headers: { 'Content-Type': 'text/plain' }
         })
-            .then((response) => {
+            .then(() => {
                 setComments(comments.map(comment =>
                     comment.id === editingCommentId ? { ...comment, commentText: editingCommentText } : comment
                 ));
@@ -137,11 +135,11 @@ const MusicFilePage = ({ user }) => {
                         </p>
                     )}
 
-                    {musicFile.genres && musicFile.genres.length > 0 && (
+                    {musicFile.genres?.length > 0 && (
                         <p><strong>Жанри:</strong> {musicFile.genres.map(genre => genre.genre).join(' • ')}</p>
                     )}
 
-                    {musicFile.tags && musicFile.tags.length > 0 && (
+                    {musicFile.tags?.length > 0 && (
                         <p><strong>Теги:</strong> {musicFile.tags.map(tag => tag.tagName).join(' • ')}</p>
                     )}
 
@@ -153,8 +151,20 @@ const MusicFilePage = ({ user }) => {
                         />
                     )}
 
-                    {/* Використовуємо кастомний програвач */}
-                    <CustomPlayer src={`http://localhost:8080/api/music-files/${musicFile.id}`} />
+                    {/* ✅ Кнопка як у MusicList */}
+                    <button
+                        className="play-btn"
+                        onClick={() =>
+                            playTrack({
+                                id: musicFile.id,
+                                src: `http://localhost:8080/api/music-files/${musicFile.id}`,
+                                coverImage: musicFile.coverImage,
+                                title: musicFile.title,
+                            })
+                        }
+                    >
+                        ▶ Play
+                    </button>
 
                     {user ? (
                         <div className="comment-container">
@@ -191,14 +201,15 @@ const MusicFilePage = ({ user }) => {
                                         </div>
                                     ) : (
                                         <div>
-                                            <p><strong><Link
-                                                to={user?.sub === comment.userId.id.toString()
-                                                    ? '/profile'
-                                                    : `/user-profile/${comment.userId.id}`}
-                                            >
-                                                {comment.userId.name}
-                                            </Link>
-                                            </strong>: {comment.commentText}</p>
+                                            <p>
+                                                <strong>
+                                                    <Link to={user?.sub === comment.userId.id.toString()
+                                                        ? '/profile'
+                                                        : `/user-profile/${comment.userId.id}`}>
+                                                        {comment.userId.name}
+                                                    </Link>
+                                                </strong>: {comment.commentText}
+                                            </p>
                                             <p className="comment-date">
                                                 {new Date(comment.postDate).toLocaleString()}
                                             </p>

@@ -1,0 +1,108 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 110%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: #1e2a47;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content {
+    max-height: 20vh;
+    overflow-y: auto;
+}
+
+.playlist-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.playlist-list li {
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* ✅ універсальний стиль кнопок тільки в модалці */
+.modal-content button {
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.modal-content button:hover {
+    transform: translateY(-1px);
+}
+
+/* кнопка "Додати" */
+.modal-content .add-btn,
+.modal-content .add-to-playlist-btn {
+    background: #03dac6;
+    color: black;
+}
+
+.modal-content .add-btn:hover,
+.modal-content .add-to-playlist-btn:hover {
+    background: #00c7b1;
+}
+
+/* кнопка "Видалити" */
+.modal-content .remove-btn {
+    background: #f44336;
+    color: white;
+}
+
+.modal-content .remove-btn:hover {
+    background: #e53935;
+}
+
+/* кнопка "Закрити" */
+.modal-content .close-btn {
+    background: #555;
+    color: white;
+}
+
+.modal-content .close-btn:hover {
+    background: #444;
+}
+
+/* анімація появи */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

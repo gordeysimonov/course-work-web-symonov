@@ -1,0 +1,18 @@
+.global-player {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;            /* ширина по контенту */
+    background: transparent; /* прозорий фон */
+    border-radius: 0;        /* можна залишити або прибрати */
+    padding: 0;              /* прибираємо відступи */
+    box-shadow: none;        /* тінь теж прибираємо */
+    z-index: 1000;
+}
+
+/* щоб контент не залазив під плеєр */
+body {
+    margin: 0;
+    padding-bottom: 80px;
+}

@@ -17,6 +17,7 @@ import MusicFilePage from "./pages/MusicFilePage";
 import SubscriptionsPage from "./pages/SubscriptionsPage";
 import FollowersPage from "./pages/FollowersPage";
 import Notifications from "./pages/Notifications";
+import { PlayerProvider } from './context/PlayerContext';
 
 const App = () => {
     const [user, setUser] = useState(null);
@@ -26,13 +27,12 @@ const App = () => {
         const token = localStorage.getItem('jwtToken');
         if (token) {
             try {
-                const decoded = jwtDecode(token); // Використовуємо jwtDecode
+                const decoded = jwtDecode(token);
                 if (decoded.exp * 1000 < Date.now()) {
-                    // Якщо токен просрочений, очищаємо localStorage
                     localStorage.removeItem('jwtToken');
                     setUser(null);
                 } else {
-                    setUser(decoded); // Зберігаємо дані користувача
+                    setUser(decoded);
                 }
             } catch (error) {
                 console.error('Invalid token', error);
@@ -43,29 +43,32 @@ const App = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('jwtToken');
-        setUser(null); // Очищаємо дані користувача при виході
+        setUser(null);
     };
 
     return (
         <Router>
-            <Header user={user} onLogout={handleLogout} />
-            <Routes>
-                <Route path="/" element={<Home user={user} />} />
-                <Route path="/login" element={<Login onLogin={setUser} />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/edit/:id" element={<EditMusic />} />
-                <Route path="/create-file" element={<CreateFilePage user={user} />} />
-                <Route path="/profile" element={<ProfilePage user={user} />} />
-                <Route path="/user-profile/:userId" element={<UserProfile user={user} />} />
-                <Route path="/category/:id" element={<CategoryPage user={user} />} />
-                <Route path="/playlist/:playlistId" element={<PlaylistPage user={user} />} />
-                <Route path="/create-playlist" element={<PlaylistCreatePage user={user} />} />
-                <Route path="/add-music-to-playlist/:playlistId" element={<AddMusicToPlaylist user={user} />} />
-                <Route path="/music-file/:musicFileId" element={<MusicFilePage user={user} />} />
-                <Route path="/subscriptions" element={<SubscriptionsPage user={user} />} />
-                <Route path="/followers" element={<FollowersPage user={user} />} />
-                <Route path="/my-notifications" element={<Notifications user={user} />} />
-            </Routes>
+            {/* ✅ user передаємо у PlayerProvider */}
+            <PlayerProvider user={user}>
+                <Header user={user} onLogout={handleLogout} />
+                <Routes>
+                    <Route path="/" element={<Home user={user} />} />
+                    <Route path="/login" element={<Login onLogin={setUser} />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/edit/:id" element={<EditMusic />} />
+                    <Route path="/create-file" element={<CreateFilePage user={user} />} />
+                    <Route path="/profile" element={<ProfilePage user={user} />} />
+                    <Route path="/user-profile/:userId" element={<UserProfile user={user} />} />
+                    <Route path="/category/:id" element={<CategoryPage user={user} />} />
+                    <Route path="/playlist/:playlistId" element={<PlaylistPage user={user} />} />
+                    <Route path="/create-playlist" element={<PlaylistCreatePage user={user} />} />
+                    <Route path="/add-music-to-playlist/:playlistId" element={<AddMusicToPlaylist user={user} />} />
+                    <Route path="/music-file/:musicFileId" element={<MusicFilePage user={user} />} />
+                    <Route path="/subscriptions" element={<SubscriptionsPage user={user} />} />
+                    <Route path="/followers" element={<FollowersPage user={user} />} />
+                    <Route path="/my-notifications" element={<Notifications user={user} />} />
+                </Routes>
+            </PlayerProvider>
         </Router>
     );
 };

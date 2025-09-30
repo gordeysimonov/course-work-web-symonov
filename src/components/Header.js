@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../css/Header.css'; // Стилі для Header
+import '../css/Header.css';
+import { PlayerContext } from '../context/PlayerContext'; // ✅ імпорт контексту
 
 const Header = ({ user, onLogout }) => {
     const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
     const [userName, setUserName] = useState(null);
     const navigate = useNavigate();
+
+    const { closeTrack } = useContext(PlayerContext); // ✅ отримуємо метод
 
     useEffect(() => {
         if (user && user.sub) {
@@ -26,7 +29,9 @@ const Header = ({ user, onLogout }) => {
             const intervalId = setInterval(() => {
                 axios.get(`http://localhost:8080/api/notifications/user/${user.sub}`)
                     .then(response => {
-                        const unreadNotifications = response.data.filter(notification => notification.status === 'unread');
+                        const unreadNotifications = response.data.filter(
+                            notification => notification.status === 'unread'
+                        );
                         setHasUnreadNotifications(unreadNotifications.length > 0);
                     })
                     .catch(error => console.error("Помилка при отриманні повідомлень:", error));
@@ -38,6 +43,7 @@ const Header = ({ user, onLogout }) => {
 
     const handleLogout = () => {
         onLogout();
+        closeTrack(); // ✅ закриваємо плеєр при виході
         navigate("/");
     };
 

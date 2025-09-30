@@ -165,3 +165,29 @@ body {
 .add-music-button:hover {
     background-color: #03dac6; /* Трохи темніший фон при наведенні */
 }
+
+.file-item .play-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px auto; /* вирівнює кнопку по центру */
+}
+
+.file-item .play-btn {
+    background-color: #bb86fc;
+    color: white;
+    border: none;
+    border-radius: 50%;   /* знову коло */
+    width: 50px;
+    height: 50px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px auto;
+    transition: background 0.2s;
+}
+
+.file-item .play-btn:hover {
+    background-color: #03dac6;
+}

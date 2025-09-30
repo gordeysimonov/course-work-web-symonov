@@ -130,3 +130,23 @@
 .music-file-page .content a:hover {
     text-decoration: underline;
 }
+
+.music-file-page .play-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px auto;   /* центрування */
+    background-color: #bb86fc;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    width: 70px;
+    height: 70px;
+    transition: background 0.2s;
+}
+
+.music-file-page .play-btn:hover {
+    background-color: #03dac6;
+}
