@@ -189,3 +189,15 @@ h2 {
     background-color: #bb86fc;
     color: #001f3d;
 }
+
+/* ❌ повністю прибираємо hover для зірок у списку */
+.readonly-rating .star:hover,
+.readonly-rating .star:hover ~ .star {
+    color: inherit !important;
+}
+
+/* ❌ прибираємо "руку" */
+.readonly-rating .star {
+    cursor: default !important;
+    pointer-events: none; /* ← ключове */
+}

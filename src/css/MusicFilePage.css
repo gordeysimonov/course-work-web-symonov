@@ -150,3 +150,15 @@
 .music-file-page .play-btn:hover {
     background-color: #03dac6;
 }
+
+.rating-wrapper {
+    display: flex;
+    flex-direction: column;   /* текст + зірки один під одним */
+    align-items: center;      /* ← ГОЛОВНЕ */
+    gap: 6px;
+}
+
+.rating-info {
+    margin: 0;
+    text-align: center;
+}

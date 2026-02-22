@@ -191,3 +191,26 @@ body {
 .file-item .play-btn:hover {
     background-color: #03dac6;
 }
+
+/* ❌ повністю прибираємо hover для зірок у списку */
+.readonly-rating .star:hover,
+.readonly-rating .star:hover ~ .star {
+    color: inherit !important;
+}
+
+/* ❌ прибираємо "руку" */
+.readonly-rating .star {
+    cursor: default !important;
+    pointer-events: none; /* ← ключове */
+}
+
+.filters-container {
+    display: flex;             /* робимо флекс-контейнер */
+    flex-direction: column;    /* елементи один під одним */
+    align-items: center;       /* центр по горизонталі */
+    justify-content: center;   /* центр по вертикалі (якщо треба) */
+    gap: 10px;                 /* відступи між фільтрами */
+    margin-bottom: 20px;       /* відстань від списку музики */
+    margin-left: 100px;
+}
+

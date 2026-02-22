@@ -2,12 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import '../css/CategoryPage.css';
-import { PlayerContext } from '../context/PlayerContext'; // ✅ підключаємо контекст
+import { PlayerContext } from '../context/PlayerContext';
+import ReadOnlyStarRating from "../components/ReadOnlyStarRating"; // ✅ підключаємо контекст
 
 const CategoryPage = ({ user }) => {
     const { id } = useParams();
     const [category, setCategory] = useState(null);
     const [musicFiles, setMusicFiles] = useState([]);
+    const [ratings, setRatings] = useState({});
 
     const { playTrack } = useContext(PlayerContext); // ✅ функція для запуску треку
 
@@ -29,6 +31,29 @@ const CategoryPage = ({ user }) => {
 
         fetchCategory();
     }, [id]);
+
+    useEffect(() => {
+        if (musicFiles.length === 0) return;
+
+        musicFiles.forEach(file => {
+            Promise.all([
+                axios.get(`http://localhost:8080/api/rates/file/${file.id}/average`),
+                axios.get(`http://localhost:8080/api/rates/file/${file.id}`)
+            ])
+                .then(([avgRes, countRes]) => {
+                    setRatings(prev => ({
+                        ...prev,
+                        [file.id]: {
+                            averageRate: avgRes.data.averageRate,
+                            ratesCount: countRes.data.length
+                        }
+                    }));
+                })
+                .catch(err =>
+                    console.error(`Error loading rating for file ${file.id}`, err)
+                );
+        });
+    }, [musicFiles]);
 
     if (!category) {
         return <div className="loading">Завантаження...</div>;
@@ -81,6 +106,15 @@ const CategoryPage = ({ user }) => {
                                         </Link>
                                     </div>
                                 )}
+
+                                <div className="readonly-rating">
+                                    {ratings[file.id] && (
+                                        <ReadOnlyStarRating
+                                            averageRate={ratings[file.id].averageRate}
+                                            ratesCount={ratings[file.id].ratesCount}
+                                        />
+                                    )}
+                                </div>
 
                                 {/* ✅ кнопка Play як у MusicList */}
                                 <button

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from "react-router-dom";
 import PlaylistCard from '../components/PlaylistCard';
 import { PlayerContext } from '../context/PlayerContext'; // ✅ додаємо контекст
+import VerticalReadOnlyRating from '../components/VerticalReadOnlyRating';
 import '../css/ProfilePage.css';
 
 const ProfilePage = ({ user }) => {
@@ -14,6 +15,7 @@ const ProfilePage = ({ user }) => {
     const [newEmail, setNewEmail] = useState('');
     const [subscriptionsCount, setSubscriptionsCount] = useState(0);
     const [followersCount, setFollowersCount] = useState(0);
+    const [ratings, setRatings] = useState({});
 
     const { playTrack } = useContext(PlayerContext); // ✅ доступ до глобального плеєра
 
@@ -92,6 +94,24 @@ const ProfilePage = ({ user }) => {
             }
         }
     };
+
+    useEffect(() => {
+        if (musicFiles.length === 0) return;
+
+        musicFiles.forEach(file => {
+            axios
+                .get(`http://localhost:8080/api/rates/file/${file.id}/average`)
+                .then(res => {
+                    setRatings(prev => ({
+                        ...prev,
+                        [file.id]: res.data.averageRate
+                    }));
+                })
+                .catch(err =>
+                    console.error(`Error loading rating for file ${file.id}`, err)
+                );
+        });
+    }, [musicFiles]);
 
     if (!user) return <p>Будь ласка, увійдіть до свого акаунту.</p>;
 
@@ -173,19 +193,29 @@ const ProfilePage = ({ user }) => {
                                                 </button>
                                             </div>
 
-                                            <div className="file-info-container">
-                                                {file.artist && <p><strong>Виконавець:</strong> {file.artist}</p>}
-                                                {file.genres?.length > 0 && (
-                                                    <p><strong>Жанри:</strong> {file.genres.map((g) => g.genre).join(' • ')}</p>
-                                                )}
-                                                {file.tags?.length > 0 && (
-                                                    <p><strong>Теги:</strong> {file.tags.map((t) => t.tagName).join(' • ')}</p>
-                                                )}
-                                                {file.year && <p><strong>Рік:</strong> {file.year}</p>}
-                                            </div>
-                                        </div>
+                                            <div className="file-info-row">
+                                                <div className="file-info-container">
+                                                    {file.artist && <p><strong>Виконавець:</strong> {file.artist}</p>}
+                                                    {file.genres?.length > 0 && (
+                                                        <p>
+                                                            <strong>Жанри:</strong> {file.genres.map((g) => g.genre).join(' • ')}
+                                                        </p>
+                                                    )}
+                                                    {file.tags?.length > 0 && (
+                                                        <p>
+                                                            <strong>Теги:</strong> {file.tags.map((t) => t.tagName).join(' • ')}
+                                                        </p>
+                                                    )}
+                                                    {file.year && <p><strong>Рік:</strong> {file.year}</p>}
+                                                </div>
 
-                                        {user && (user.roles.includes('ADMIN') || Number(user.sub) === file.uploadedBy?.id) && (
+                                                {ratings[file.id] !== undefined && (
+                                                    <VerticalReadOnlyRating averageRate={ratings[file.id]} />
+                                                )}
+                                            </div>
+                                            </div>
+
+                                            {user && (user.roles.includes('ADMIN') || Number(user.sub) === file.uploadedBy?.id) && (
                                             <div className="file-actions">
                                                 <Link to={`/edit/${file.id}`} state={{ user }}>
                                                     <button>Редагувати</button>

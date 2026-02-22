@@ -2,7 +2,9 @@ import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import '../css/MusicList.css';
-import { PlayerContext } from '../context/PlayerContext'; // 👈 імпортуємо контекст
+import { PlayerContext } from '../context/PlayerContext';
+import ReadOnlyStarRating from '../components/ReadOnlyStarRating';
+import MusicFilters from '../components/MusicFilters';
 
 const MusicList = ({ user }) => {
     const [musicFiles, setMusicFiles] = useState([]);
@@ -13,54 +15,67 @@ const MusicList = ({ user }) => {
     const [yearRange, setYearRange] = useState([0, new Date().getFullYear()]);
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [genres, setGenres] = useState([]);
+    const [ratings, setRatings] = useState({});
 
-    const { playTrack } = useContext(PlayerContext); // 👈 доступ до глобального плеєра
+    const { playTrack } = useContext(PlayerContext);
 
+    // Завантаження жанрів
     useEffect(() => {
-        axios
-            .get('http://localhost:8080/api/genres')
-            .then((response) => setGenres(response.data))
-            .catch((error) => {
-                console.error('Error fetching genres:', error);
+        axios.get('http://localhost:8080/api/genres')
+            .then(res => setGenres(res.data))
+            .catch(err => {
+                console.error('Error fetching genres:', err);
                 setError('Не вдалося завантажити список жанрів.');
             });
     }, []);
 
-    const handleSearchChange = (event) => setSearchQuery(event.target.value);
-    const handleSortChange = (event) => setSortOption(event.target.value);
-    const handleYearRangeChange = (event) => {
-        const [startYear, endYear] = event.target.value.split('-').map(Number);
-        setYearRange([startYear, endYear]);
-    };
-    const handleGenreChange = (event) => {
-        const selected = Array.from(event.target.selectedOptions, (option) => option.value);
-        setSelectedGenres(selected);
-    };
-
+    // Завантаження музичних файлів
     useEffect(() => {
-        axios
-            .get('http://localhost:8080/api/music-files')
-            .then((response) => {
-                setMusicFiles(response.data);
-                setFilteredFiles(response.data);
+        axios.get('http://localhost:8080/api/music-files')
+            .then(res => {
+                setMusicFiles(res.data);
+                setFilteredFiles(res.data);
             })
-            .catch((error) => {
-                console.error('Error fetching music files:', error);
+            .catch(err => {
+                console.error('Error fetching music files:', err);
                 setError('Не вдалося завантажити список музичних файлів.');
             });
     }, []);
 
-    const filterAndSortFiles = () => {
+    // Завантаження рейтингів
+    useEffect(() => {
+        if (musicFiles.length === 0) return;
+
+        musicFiles.forEach(file => {
+            Promise.all([
+                axios.get(`http://localhost:8080/api/rates/file/${file.id}/average`),
+                axios.get(`http://localhost:8080/api/rates/file/${file.id}`)
+            ])
+                .then(([avgRes, countRes]) => {
+                    setRatings(prev => ({
+                        ...prev,
+                        [file.id]: {
+                            averageRate: avgRes.data.averageRate,
+                            ratesCount: countRes.data.length
+                        }
+                    }));
+                })
+                .catch(err => console.error(`Error loading rating for file ${file.id}`, err));
+        });
+    }, [musicFiles]);
+
+    // Фільтрація та сортування
+    useEffect(() => {
         let files = [...musicFiles];
 
         if (searchQuery.trim()) {
-            files = files.filter((file) =>
+            files = files.filter(file =>
                 file.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 file.artist?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                (file.tags?.some(tag => tag.tagName.toLowerCase().includes(searchQuery.toLowerCase()))) ||
-                (file.genres?.some(genre => genre.genre.toLowerCase().includes(searchQuery.toLowerCase()))) ||
-                (file.uploadedBy?.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-                (file.year?.toString().includes(searchQuery.trim()))
+                file.tags?.some(tag => tag.tagName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                file.genres?.some(genre => genre.genre.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                file.uploadedBy?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                file.year?.toString().includes(searchQuery.trim())
             );
         }
 
@@ -74,60 +89,74 @@ const MusicList = ({ user }) => {
             files.sort((a, b) => b.year - a.year);
         } else if (sortOption === 'date') {
             files.sort((a, b) => new Date(b.downloadDate) - new Date(a.downloadDate));
-        }
+        } else if (sortOption === 'rating') {
+            files.sort((a, b) => {
+                const rateA = ratings[a.id]?.averageRate || 0;
+                const rateB = ratings[b.id]?.averageRate || 0;
+                return rateB - rateA; // від найвищого до найнижчого
+            })}
 
         setFilteredFiles(files);
-    };
-
-    useEffect(() => {
-        filterAndSortFiles();
     }, [searchQuery, sortOption, yearRange, selectedGenres, musicFiles]);
 
     const handleDelete = (id) => {
         const confirmDelete = window.confirm('Натисніть ще раз, щоб підтвердити видалення.');
-        if (confirmDelete) {
-            axios
-                .delete(`http://localhost:8080/api/music-files/${id}`, {
-                    headers: {
-                        userId: user.sub,
-                        roles: user.roles.join(','),
-                    },
-                })
-                .then(() => {
-                    alert('Файл успішно видалено!');
-                    setMusicFiles(musicFiles.filter((file) => file.id !== id));
-                    setFilteredFiles(filteredFiles.filter((file) => file.id !== id));
-                })
-                .catch((error) => {
-                    console.error('Error deleting music file:', error);
-                    if (error.response) {
-                        alert(`Помилка: ${error.response.data}`);
-                    } else {
-                        alert('Не вдалося видалити файл.');
-                    }
-                });
-        }
+        if (!confirmDelete) return;
+
+        axios.delete(`http://localhost:8080/api/music-files/${id}`, {
+            headers: { userId: user.sub, roles: user.roles.join(',') }
+        })
+            .then(() => {
+                alert('Файл успішно видалено!');
+                setMusicFiles(musicFiles.filter(f => f.id !== id));
+                setFilteredFiles(filteredFiles.filter(f => f.id !== id));
+            })
+            .catch(err => {
+                console.error('Error deleting music file:', err);
+                if (err.response) alert(`Помилка: ${err.response.data}`);
+                else alert('Не вдалося видалити файл.');
+            });
     };
 
-    if (error) {
-        return <div className="error">{error}</div>;
-    }
+    // Обробники фільтрів
+    const handleSearchChange = (e) => setSearchQuery(e.target.value);
+    const handleSortChange = (e) => setSortOption(e.target.value);
+    const handleYearRangeChange = (e) => {
+        const [start, end] = e.target.value.split('-').map(Number);
+        setYearRange([start, end]);
+    };
+    const handleGenreChange = (e) => {
+        const selected = Array.from(e.target.selectedOptions, opt => opt.value);
+        setSelectedGenres(selected);
+    };
+
+    if (error) return <div className="error">{error}</div>;
 
     return (
         <div className="music-list">
             <h2>Список музики</h2>
 
-            {/* ... фільтри як були ... */}
+            <div className="filters-container">
+                <MusicFilters
+                    searchQuery={searchQuery}
+                    sortOption={sortOption}
+                    yearRange={yearRange}
+                    selectedGenres={selectedGenres}
+                    genres={genres}
+                    handleSearchChange={handleSearchChange}
+                    handleSortChange={handleSortChange}
+                    handleYearRangeChange={handleYearRangeChange}
+                    handleGenreChange={handleGenreChange}
+                />
+            </div>
 
             {filteredFiles.length === 0 ? (
                 <p>Наразі немає завантажених файлів, що відповідають пошуковому запиту.</p>
             ) : (
                 <ul className="music-list">
-                    {filteredFiles.map((file) => (
+                    {filteredFiles.map(file => (
                         <li key={file.id} className="file-item">
-                            <div className="file-title">
-                                <strong>{file.title}</strong>
-                            </div>
+                            <div className="file-title"><strong>{file.title}</strong></div>
                             <div className="file-user">
                                 <span>від </span>
                                 <Link
@@ -138,6 +167,7 @@ const MusicList = ({ user }) => {
                                     {file.uploadedBy?.name || 'Анонім'}
                                 </Link>
                             </div>
+
                             {file.coverImage && (
                                 <div className="file-cover">
                                     <Link to={`/music-file/${file.id}`}>
@@ -151,7 +181,15 @@ const MusicList = ({ user }) => {
                                 </div>
                             )}
 
-                            {/* 👉 ТУТ вже нема CustomAudioPlayer */}
+                            <div className="readonly-rating">
+                                {ratings[file.id] && (
+                                    <ReadOnlyStarRating
+                                        averageRate={ratings[file.id].averageRate}
+                                        ratesCount={ratings[file.id].ratesCount}
+                                    />
+                                )}
+                            </div>
+
                             <button
                                 className="play-btn"
                                 onClick={() =>
@@ -159,7 +197,7 @@ const MusicList = ({ user }) => {
                                         id: file.id,
                                         src: `http://localhost:8080/api/music-files/${file.id}`,
                                         coverImage: file.coverImage,
-                                        title: file.title,
+                                        title: file.title
                                     })
                                 }
                             >
@@ -168,18 +206,18 @@ const MusicList = ({ user }) => {
 
                             <div className="file-details">
                                 {file.artist && <p><strong>Виконавець:</strong> {file.artist}</p>}
-                                {file.genres && file.genres.length > 0 && (
-                                    <p><strong>Жанри:</strong> {file.genres.map(genre => genre.genre).join(' • ')}</p>
+                                {file.genres?.length > 0 && (
+                                    <p><strong>Жанри:</strong> {file.genres.map(g => g.genre).join(' • ')}</p>
                                 )}
-                                {file.tags && file.tags.length > 0 && (
-                                    <p><strong>Теги:</strong> {file.tags.map(tag => tag.tagName).join(' • ')}</p>
+                                {file.tags?.length > 0 && (
+                                    <p><strong>Теги:</strong> {file.tags.map(t => t.tagName).join(' • ')}</p>
                                 )}
                                 {file.year && <p><strong>Рік:</strong> {file.year}</p>}
                             </div>
 
                             {user && (user.roles.includes('ADMIN') || Number(user.sub) === file.uploadedBy?.id) && (
                                 <div className="file-actions">
-                                    <Link to={`/edit/${file.id}`} state={{ user }}>
+                                    <Link to={`/edit/${file.id}`} state={{user}}>
                                         <button>Редагувати</button>
                                     </Link>
                                     <button onClick={() => handleDelete(file.id)}>Видалити</button>

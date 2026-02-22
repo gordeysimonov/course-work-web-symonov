@@ -1,0 +1,27 @@
+.star-rating {
+    display: flex;
+    font-size: 2rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.star {
+    color: #555; /* темно-сірий фон */
+    position: relative;
+    display: inline-block;
+    transition: color 0.2s;
+}
+
+.star.full {
+    color: #b59f00; /* темно-жовтий для середньої оцінки */
+}
+
+.star.half {
+    background: linear-gradient(90deg, #b59f00 50%, #555 50%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.star-rating .star:hover {
+    color: #ffdd55; /* світло-жовтий при hover */
+}

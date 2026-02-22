@@ -184,3 +184,47 @@
 .playlists-section a:hover {
     text-decoration: underline;
 }
+
+/* рядок: інфа + рейтинг */
+.file-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+/* ліва частина */
+.file-info-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* рейтинг справа */
+.vertical-rating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 40px;
+}
+
+/* зірки вертикально */
+.vertical-stars {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.vertical-stars .star {
+    pointer-events: none;
+    cursor: default;
+    font-size: 16px;
+    line-height: 1.05;
+}
+
+/* число під зірками */
+.vertical-rate-value {
+    margin-top: 6px;
+    font-size: 14px;
+    font-weight: bold;
+}

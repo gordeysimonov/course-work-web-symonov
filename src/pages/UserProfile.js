@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import { PlayerContext } from '../context/PlayerContext'; // ✅ імпортуємо контекст
 import '../css/UserProfile.css';
+import VerticalReadOnlyRating from "../components/VerticalReadOnlyRating";
 
 const UserProfile = ({ user }) => {
     const { userId } = useParams();
@@ -10,6 +11,7 @@ const UserProfile = ({ user }) => {
     const [musicFiles, setMusicFiles] = useState([]);
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [error, setError] = useState(null);
+    const [ratings, setRatings] = useState({});
 
     const { playTrack } = useContext(PlayerContext); // ✅ отримуємо функцію для запуску треку
 
@@ -98,6 +100,24 @@ const UserProfile = ({ user }) => {
         }
     };
 
+    useEffect(() => {
+        if (musicFiles.length === 0) return;
+
+        musicFiles.forEach(file => {
+            axios
+                .get(`http://localhost:8080/api/rates/file/${file.id}/average`)
+                .then(res => {
+                    setRatings(prev => ({
+                        ...prev,
+                        [file.id]: res.data.averageRate
+                    }));
+                })
+                .catch(err =>
+                    console.error(`Error loading rating for file ${file.id}`, err)
+                );
+        });
+    }, [musicFiles]);
+
     if (error) {
         return <div className="error">{error}</div>;
     }
@@ -185,46 +205,51 @@ const UserProfile = ({ user }) => {
                                             </button>
                                         </div>
 
-                                        <div className="file-info-container">
-                                            {file.artist && (
-                                                <p>
-                                                    <strong>Виконавець:</strong> {file.artist}
-                                                </p>
-                                            )}
-                                            {file.genres?.length > 0 && (
-                                                <p>
-                                                    <strong>Жанри:</strong>{' '}
-                                                    {file.genres.map((genre) => genre.genre).join(' • ')}
-                                                </p>
-                                            )}
-                                            {file.tags?.length > 0 && (
-                                                <p>
-                                                    <strong>Теги:</strong>{' '}
-                                                    {file.tags.map((tag) => tag.tagName).join(' • ')}
-                                                </p>
-                                            )}
-                                            {file.year && (
-                                                <p>
-                                                    <strong>Рік:</strong> {file.year}
-                                                </p>
+                                        <div className="file-info-row">
+                                            <div className="file-info-container">
+                                                {file.artist && (
+                                                    <p>
+                                                        <strong>Виконавець:</strong> {file.artist}
+                                                    </p>
+                                                )}
+                                                {file.genres?.length > 0 && (
+                                                    <p>
+                                                        <strong>Жанри:</strong>{' '}
+                                                        {file.genres.map((genre) => genre.genre).join(' • ')}
+                                                    </p>
+                                                )}
+                                                {file.tags?.length > 0 && (
+                                                    <p>
+                                                        <strong>Теги:</strong>{' '}
+                                                        {file.tags.map((tag) => tag.tagName).join(' • ')}
+                                                    </p>
+                                                )}
+                                                {file.year && (
+                                                    <p>
+                                                        <strong>Рік:</strong> {file.year}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            {ratings[file.id] !== undefined && (
+                                                <VerticalReadOnlyRating averageRate={ratings[file.id]}/>
                                             )}
                                         </div>
-                                    </div>
+                                        </div>
 
-                                    {user &&
-                                        (user.roles.includes('ADMIN') ||
-                                            Number(user.sub) === file.uploadedBy?.id) && (
-                                            <div className="file-actions">
-                                                <Link to={`/edit/${file.id}`} state={{ user }}>
-                                                    <button>Редагувати</button>
-                                                </Link>
-                                                <button onClick={() => handleDelete(file.id)}>
-                                                    Видалити
-                                                </button>
-                                            </div>
-                                        )}
+                                        {user &&
+                                            (user.roles.includes('ADMIN') ||
+                                                Number(user.sub) === file.uploadedBy?.id) && (
+                                                <div className="file-actions">
+                                                    <Link to={`/edit/${file.id}`} state={{user}}>
+                                                        <button>Редагувати</button>
+                                                    </Link>
+                                                    <button onClick={() => handleDelete(file.id)}>
+                                                        Видалити
+                                                    </button>
+                                                </div>
+                                            )}
                                 </li>
-                            ))}
+                                ))}
                         </ul>
                     )}
                 </>

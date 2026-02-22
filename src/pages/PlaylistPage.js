@@ -3,12 +3,14 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import '../css/MusicList.css';
 import { PlayerContext } from '../context/PlayerContext';
+import ReadOnlyStarRating from "../components/ReadOnlyStarRating";
 
 const PlaylistPage = ({ user }) => {
     const { playlistId } = useParams();
     const [playlistData, setPlaylistData] = useState(null);
     const [musicFiles, setMusicFiles] = useState([]);
     const [error, setError] = useState(null);
+    const [ratings, setRatings] = useState({});
 
     const { playPlaylist } = useContext(PlayerContext); // ✅ замість playTrack
 
@@ -51,6 +53,29 @@ const PlaylistPage = ({ user }) => {
             console.error('Error removing music from playlist:', error);
         }
     };
+
+    useEffect(() => {
+        if (musicFiles.length === 0) return;
+
+        musicFiles.forEach(file => {
+            Promise.all([
+                axios.get(`http://localhost:8080/api/rates/file/${file.id}/average`),
+                axios.get(`http://localhost:8080/api/rates/file/${file.id}`)
+            ])
+                .then(([avgRes, countRes]) => {
+                    setRatings(prev => ({
+                        ...prev,
+                        [file.id]: {
+                            averageRate: avgRes.data.averageRate,
+                            ratesCount: countRes.data.length
+                        }
+                    }));
+                })
+                .catch(err =>
+                    console.error(`Error loading rating for file ${file.id}`, err)
+                );
+        });
+    }, [musicFiles]);
 
     if (error) {
         return <div>{error}</div>;
@@ -95,6 +120,15 @@ const PlaylistPage = ({ user }) => {
                                     </Link>
                                 </div>
                             )}
+
+                            <div className="readonly-rating">
+                                {ratings[file.id] && (
+                                    <ReadOnlyStarRating
+                                        averageRate={ratings[file.id].averageRate}
+                                        ratesCount={ratings[file.id].ratesCount}
+                                    />
+                                )}
+                            </div>
 
                             {/* ✅ запуск плейлиста з цього треку */}
                             <button
