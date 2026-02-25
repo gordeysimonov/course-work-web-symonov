@@ -17,6 +17,7 @@ import MusicFilePage from "./pages/MusicFilePage";
 import SubscriptionsPage from "./pages/SubscriptionsPage";
 import FollowersPage from "./pages/FollowersPage";
 import Notifications from "./pages/Notifications";
+import Chat from './pages/Chat';
 import { PlayerProvider } from './context/PlayerContext';
 
 const App = () => {
@@ -67,6 +68,7 @@ const App = () => {
                     <Route path="/subscriptions" element={<SubscriptionsPage user={user} />} />
                     <Route path="/followers" element={<FollowersPage user={user} />} />
                     <Route path="/my-notifications" element={<Notifications user={user} />} />
+                    <Route path="/chats" element={<Chat user={user} />} />
                 </Routes>
             </PlayerProvider>
         </Router>

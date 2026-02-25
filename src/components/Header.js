@@ -2,39 +2,51 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../css/Header.css';
-import { PlayerContext } from '../context/PlayerContext'; // ✅ імпорт контексту
+import { PlayerContext } from '../context/PlayerContext';
 
 const Header = ({ user, onLogout }) => {
     const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+    const [hasUnreadChats, setHasUnreadChats] = useState(false); // ✅ стан для чатів
     const [userName, setUserName] = useState(null);
     const navigate = useNavigate();
-
-    const { closeTrack } = useContext(PlayerContext); // ✅ отримуємо метод
+    const { closeTrack } = useContext(PlayerContext);
 
     useEffect(() => {
         if (user && user.sub) {
             axios.get(`http://localhost:8080/api/users/${user.sub}`)
-                .then(response => {
-                    setUserName(response.data.name);
-                })
-                .catch(error => {
-                    console.error("Помилка при отриманні користувача:", error);
-                    setUserName(null);
-                });
+                .then(res => setUserName(res.data.name))
+                .catch(() => setUserName(null));
         }
     }, [user]);
 
     useEffect(() => {
         if (user) {
-            const intervalId = setInterval(() => {
-                axios.get(`http://localhost:8080/api/notifications/user/${user.sub}`)
-                    .then(response => {
-                        const unreadNotifications = response.data.filter(
-                            notification => notification.status === 'unread'
+            const intervalId = setInterval(async () => {
+                try {
+                    // 🔴 Повідомлення
+                    const notificationsRes = await axios.get(`http://localhost:8080/api/notifications/user/${user.sub}`);
+                    const unreadNotifications = notificationsRes.data.filter(n => n.status === 'unread');
+                    setHasUnreadNotifications(unreadNotifications.length > 0);
+
+                    // 🔵 Чати
+                    const chatsRes = await axios.get(`http://localhost:8080/api/chats/user/${user.sub}`);
+                    const chats = chatsRes.data;
+
+                    let hasUnread = false;
+                    for (let chat of chats) {
+                        const unreadRes = await axios.get(
+                            `http://localhost:8080/api/messages/unread/${chat.id}`,
+                            { params: { userId: user.sub } }
                         );
-                        setHasUnreadNotifications(unreadNotifications.length > 0);
-                    })
-                    .catch(error => console.error("Помилка при отриманні повідомлень:", error));
+                        if (unreadRes.data > 0) {
+                            hasUnread = true;
+                            break;
+                        }
+                    }
+                    setHasUnreadChats(hasUnread);
+                } catch (err) {
+                    console.error(err);
+                }
             }, 1000);
 
             return () => clearInterval(intervalId);
@@ -43,7 +55,7 @@ const Header = ({ user, onLogout }) => {
 
     const handleLogout = () => {
         onLogout();
-        closeTrack(); // ✅ закриваємо плеєр при виході
+        closeTrack();
         navigate("/");
     };
 
@@ -63,12 +75,17 @@ const Header = ({ user, onLogout }) => {
 
                         <button onClick={handleLogout} className="action-button">Вийти</button>
 
+                        <Link to="/chats" className="chats-link">
+                            <button className="action-button">
+                                Чати
+                                {hasUnreadChats && <span className="notification-badge"></span>}
+                            </button>
+                        </Link>
+
                         <Link to="/my-notifications" className="notifications-link" state={{ user }}>
                             <button className="action-button">
                                 Повідомлення
-                                {hasUnreadNotifications && (
-                                    <span className="notification-badge"></span>
-                                )}
+                                {hasUnreadNotifications && <span className="notification-badge"></span>}
                             </button>
                         </Link>
                     </div>

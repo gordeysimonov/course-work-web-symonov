@@ -1,0 +1,192 @@
+.chat-page {
+    display: flex;
+    height: 84vh;
+    overflow: hidden; /* повністю прибираємо скрол сторінки */
+    background-color: #1e1e1e;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+/* Ліва частина - список чатів */
+.chat-list {
+    width: 280px;
+    background-color: #2a2a2a;
+    overflow-y: auto; /* окремий скрол */
+    border-right: 1px solid #444;
+    padding: 10px 0;
+}
+
+.chat-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.chat-item.active {
+    background-color: #3a3a3a;
+}
+
+.chat-unread-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #03dac6; /* синя точка */
+    border-radius: 50%;
+    position: absolute;
+    top: 15px; /* підлаштуй по вертикалі */
+    right: 10px; /* підлаштуй по горизонталі */
+}
+
+.chat-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.chat-avatar img.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* Інформація про чат */
+.chat-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.chat-name {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+.chat-last {
+    font-size: 12px;
+    color: #ccc;
+    word-wrap: break-word;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chat-last-time {
+    font-size: 10px;
+    color: #888;
+    margin-left: 5px;
+    flex-shrink: 0;
+}
+
+/* Права частина - вікно повідомлень */
+.chat-window {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #1e1e1e;
+}
+
+/* Повідомлення */
+.messages-container {
+    flex: 1;
+    overflow-y: auto; /* окремий скрол */
+    padding: 10px;
+}
+.message-row {
+    display: flex;
+    margin-bottom: 8px;
+}
+.my-row {
+    justify-content: flex-end;
+}
+.other-row {
+    justify-content: flex-start;
+}
+
+.message-bubble {
+    position: relative;
+    font-size: 20px;
+    max-width: 50ch;
+    padding: 8px 12px;
+    border-radius: 16px;
+    background-color: #3a3a3a;
+    color: white;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    line-height: 1.4;
+}
+.my-message {
+    background-color: #4a90e2;
+}
+.other-message {
+    background-color: #555;
+}
+.message-content {
+    margin-bottom: 16px; /* залишаємо місце для часу */
+}
+.message-time {
+    position: absolute;
+    bottom: 4px;
+    right: 8px;
+    font-size: 10px;
+    color: #ccc;
+}
+
+/* Введення нового повідомлення */
+.message-input-container {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #444;
+}
+.message-input-container input {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: none;
+    margin-right: 8px;
+    background-color: #2a2a2a;
+    color: white;
+}
+.message-input-container input:focus {
+    outline: none;
+}
+.message-input-container button {
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: none;
+    background-color: #4a90e2;
+    color: white;
+    cursor: pointer;
+}
+.message-input-container button:hover {
+    background-color: #357ab8;
+}
+
+.no-chat {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #888;
+}
+
+.unread-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #03dac6;
+    border-radius: 50%;
+    margin-left: 8px;
+    display: inline-block;
+}
+
+.message-unread-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #03dac6;
+    border-radius: 50%;
+    margin-left: 8px;
+}

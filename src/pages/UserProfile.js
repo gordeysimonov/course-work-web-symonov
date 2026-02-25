@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { PlayerContext } from '../context/PlayerContext'; // ✅ імпортуємо контекст
 import '../css/UserProfile.css';
 import VerticalReadOnlyRating from "../components/VerticalReadOnlyRating";
@@ -12,6 +13,7 @@ const UserProfile = ({ user }) => {
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [error, setError] = useState(null);
     const [ratings, setRatings] = useState({});
+    const navigate = useNavigate();
 
     const { playTrack } = useContext(PlayerContext); // ✅ отримуємо функцію для запуску треку
 
@@ -100,6 +102,36 @@ const UserProfile = ({ user }) => {
         }
     };
 
+    const handleMessageUser = async () => {
+        if (!user) return;
+
+        try {
+            // 1️⃣ отримуємо всі чати поточного користувача
+            const response = await axios.get(`http://localhost:8080/api/chats/user/${user.sub}`);
+            const userChats = response.data;
+
+            // 2️⃣ шукаємо чат, де є цей користувач
+            let chat = userChats.find(c =>
+                c.participants?.some(p => String(p.id) === String(userId))
+            );
+
+            // 3️⃣ якщо чату немає, створюємо його через правильний ендпоінт
+            if (!chat) {
+                const createRes = await axios.post(`http://localhost:8080/api/chats/private`, null, {
+                    params: { user1Id: user.sub, user2Id: userId }
+                });
+                chat = createRes.data;
+            }
+
+            // 4️⃣ перенаправляємо на /chats та відкриваємо потрібний чат
+            navigate(`/chats`, { state: { openChatId: chat.id } });
+
+        } catch (err) {
+            console.error("Помилка при створенні/відкритті чату:", err.response?.data || err);
+            alert("Не вдалося відкрити чат.");
+        }
+    };
+
     useEffect(() => {
         if (musicFiles.length === 0) return;
 
@@ -160,6 +192,15 @@ const UserProfile = ({ user }) => {
                                     Відписатися
                                 </button>
                             )}
+
+                            {/* Кнопка "Написати повідомлення" */}
+                            <button
+                                className="subscribe-button" // можна стилізувати як підписку
+                                style={{ marginTop: '10px', backgroundColor: '#03dac6', color: '#001f3d' }}
+                                onClick={handleMessageUser}
+                            >
+                                Написати повідомлення
+                            </button>
                         </div>
                     )}
 
