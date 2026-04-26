@@ -16,6 +16,10 @@ const UploadMusicPage = ({ user }) => {
     const [fileError, setFileError] = useState('');
     const [coverError, setCoverError] = useState('');
 
+    const [predictedGenres, setPredictedGenres] = useState([]);
+    const [predictionError, setPredictionError] = useState('');
+    const [isPredicting, setIsPredicting] = useState(false);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -46,14 +50,49 @@ const UploadMusicPage = ({ user }) => {
         setTags(tagList);
     };
 
-    const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
         const selectedFile = e.target.files[0];
+
         if (selectedFile && !selectedFile.name.endsWith('.mp3')) {
             setFileError('Будь ласка, виберіть MP3 файл.');
             setFile(null);
-        } else {
-            setFileError('');
-            setFile(selectedFile);
+            setPredictedGenres([]);
+            return;
+        }
+
+        setFileError('');
+        setFile(selectedFile);
+        setPredictedGenres([]);
+        setPredictionError('');
+
+        if (!selectedFile) return;
+
+        try {
+            setIsPredicting(true);
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            const response = await axios.post(
+                'http://localhost:8080/api/music-files/predict-genres',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            );
+
+            if (response.data?.predictions) {
+                setPredictedGenres(response.data.predictions);
+            } else if (response.data?.error) {
+                setPredictionError(response.data.error);
+            }
+        } catch (error) {
+            console.error('Помилка при аналізі жанру:', error);
+            setPredictionError(error.response?.data?.error || 'Не вдалося визначити жанр');
+        } finally {
+            setIsPredicting(false);
         }
     };
 
@@ -147,6 +186,28 @@ const UploadMusicPage = ({ user }) => {
                         />
                         {fileError && <p className="error-message">{fileError}</p>}
                     </div>
+
+                    <div>
+                        <label>Рекомендовані жанри:</label>
+
+                        {isPredicting && <p>Аналіз треку...</p>}
+
+                        {predictionError && <p className="error-message">{predictionError}</p>}
+
+                        {!isPredicting && predictedGenres.length > 0 && (
+                            <div className="predicted-genres-box">
+                                <p><strong>Модель рекомендує:</strong></p>
+                                <ul>
+                                    {predictedGenres.map((item, index) => (
+                                        <li key={index}>
+                                            {item.genre} — {(item.probability * 100).toFixed(1)}%
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+
                     <div>
                         <label>Обкладинка (зображення):</label>
                         <input

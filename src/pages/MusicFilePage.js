@@ -21,6 +21,11 @@ const MusicFilePage = ({ user }) => {
     const [averageRate, setAverageRate] = useState(0);
     const [ratesCount, setRatesCount] = useState(0);
 
+    const [similarTracks, setSimilarTracks] = useState([]);
+    const [showSimilarTracks, setShowSimilarTracks] = useState(false);
+    const [similarTracksLoading, setSimilarTracksLoading] = useState(false);
+    const [similarTracksError, setSimilarTracksError] = useState('');
+
     // ✦ Завантаження всіх файлів
     useEffect(() => {
         axios.get('http://localhost:8080/api/music-files')
@@ -127,6 +132,34 @@ const MusicFilePage = ({ user }) => {
         setEditingCommentText('');
     };
 
+    const handleShowSimilarTracks = async () => {
+        if (!musicFileId) return;
+
+        if (showSimilarTracks) {
+            setShowSimilarTracks(false);
+            return;
+        }
+
+        try {
+            setSimilarTracksLoading(true);
+            setSimilarTracksError('');
+
+            const response = await axios.get(`http://localhost:8080/api/music-files/${musicFileId}/similar`);
+            setSimilarTracks(response.data);
+            setShowSimilarTracks(true);
+        } catch (error) {
+            console.error('Error fetching similar tracks:', error);
+            setSimilarTracksError('Не вдалося завантажити схожі треки.');
+        } finally {
+            setSimilarTracksLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        setShowSimilarTracks(false);
+        setSimilarTracks([]);
+    }, [musicFileId]);
+
     return (
         <div className="music-file-page">
             {musicFile ? (
@@ -156,9 +189,9 @@ const MusicFilePage = ({ user }) => {
                         <p><strong>Теги:</strong> {musicFile.tags.map(t => t.tagName).join(' • ')}</p>
                     )}
 
-                    {musicFile.coverImage && (
+                    {musicFile.id && (
                         <img
-                            src={`data:image/jpeg;base64,${musicFile.coverImage}`}
+                            src={`http://localhost:8080/api/music-files/cover/${musicFile.id}`}
                             alt="Cover"
                             className="cover-image"
                         />
@@ -187,102 +220,152 @@ const MusicFilePage = ({ user }) => {
                     </div>
 
                     {/* Play */}
-                            <button
-                                className="play-btn"
-                                onClick={() =>
-                                    playTrack({
-                                        id: musicFile.id,
-                                        src: `http://localhost:8080/api/music-files/${musicFile.id}`,
-                                        coverImage: musicFile.coverImage,
-                                        title: musicFile.title,
-                                    })
-                                }
-                            >
-                                ▶ Play
+                    <button
+                        className="play-btn"
+                        onClick={() =>
+                            playTrack({
+                                id: musicFile.id,
+                                src: `http://localhost:8080/api/music-files/${musicFile.id}`,
+                                coverImage: `http://localhost:8080/api/music-files/cover/${musicFile.id}`,
+                                title: musicFile.title,
+                            })
+                        }
+                    >
+                        ▶ Play
+                    </button>
+
+                    <button
+                        className="play-btn"
+                        onClick={handleShowSimilarTracks}
+                    >
+                        {showSimilarTracks ? 'Сховати схожі треки' : 'Схожі треки'}
+                    </button>
+
+                    {similarTracksLoading && <p>Завантаження схожих треків...</p>}
+
+                    {similarTracksError && <p className="error">{similarTracksError}</p>}
+
+                    {showSimilarTracks && similarTracks.length > 0 && (
+                        <div className="similar-tracks-modal">
+                            <h3>Схожі треки</h3>
+
+                            <div className="similar-tracks-grid">
+                                {similarTracks.map((track) => (
+                                    <div key={track.id} className="similar-track-card">
+                                        <Link to={`/music-file/${track.id}`}>
+                                            <img
+                                                src={`http://localhost:8080/api/music-files/cover/${track.id}`}
+                                                alt={track.title}
+                                                className="similar-track-cover"
+                                            />
+                                        </Link>
+
+                                        <p className="similarity-score">
+                                            Схожість: {(track.similarityScore * 100).toFixed(1)}%
+                                        </p>
+
+                                        <p><strong>{track.title}</strong></p>
+                                        <p>{track.artist}</p>
+
+                                        <p>
+                                            <Link
+                                                to={
+                                                    user?.sub === track.uploadedById.toString()
+                                                        ? '/profile'
+                                                        : `/user-profile/${track.uploadedById}`
+                                                }
+                                            >
+                                                {track.uploadedByName || 'Анонім'}
+                                            </Link>
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Коментарі */}
+                    {user ? (
+                        <div className="comment-container">
+                            <label htmlFor="comment">Ваш коментар:</label>
+                            <textarea
+                                id="comment"
+                                value={comment}
+                                onChange={handleCommentChange}
+                                placeholder="Напишіть свій коментар..."
+                                className="comment-input"
+                            />
+                            <button onClick={handleAddComment} className="comment-button">
+                                Додати коментар
                             </button>
+                        </div>
+                    ) : (
+                        <p>Щоб залишити коментар, будь ласка, увійдіть у систему.</p>
+                    )}
 
-                            {/* Коментарі */}
-                            {user ? (
-                                <div className="comment-container">
-                                    <label htmlFor="comment">Ваш коментар:</label>
-                                    <textarea
-                                        id="comment"
-                                        value={comment}
-                                        onChange={handleCommentChange}
-                                        placeholder="Напишіть свій коментар..."
-                                        className="comment-input"
-                                    />
-                                    <button onClick={handleAddComment} className="comment-button">
-                                        Додати коментар
-                                    </button>
-                                </div>
-                            ) : (
-                                <p>Щоб залишити коментар, будь ласка, увійдіть у систему.</p>
-                            )}
+                    {error && <p className="error">{error}</p>}
 
-                            {error && <p className="error">{error}</p>}
+                    <div className="comments-list">
+                        <h3>Коментарі:</h3>
 
-                            <div className="comments-list">
-                                <h3>Коментарі:</h3>
-
-                                {comments.length > 0 ? (
-                                    comments.map(comment => (
-                                        <div key={comment.id} className="comment-item">
-                                            {editingCommentId === comment.id ? (
-                                                <div>
+                        {comments.length > 0 ? (
+                            comments.map(comment => (
+                                <div key={comment.id} className="comment-item">
+                                    {editingCommentId === comment.id ? (
+                                        <div>
                                             <textarea
                                                 value={editingCommentText}
                                                 onChange={(e) => setEditingCommentText(e.target.value)}
                                                 className="comment-input"
                                             />
-                                                    <button onClick={handleSaveComment} className="comment-button">
-                                                        Зберегти
-                                                    </button>
-                                                    <button onClick={handleCancelEdit} className="comment-button">
-                                                        Скасувати
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <div>
-                                                    <p>
-                                                        <strong>
-                                                            <Link to={
-                                                                user?.sub === comment.userId.id.toString()
-                                                                    ? '/profile'
-                                                                    : `/user-profile/${comment.userId.id}`
-                                                            }>
-                                                                {comment.userId.name}
-                                                            </Link>
-                                                        </strong>: {comment.commentText}
-                                                    </p>
-                                                    <p className="comment-date">
-                                                        {new Date(comment.postDate).toLocaleString()}
-                                                    </p>
+                                            <button onClick={handleSaveComment} className="comment-button">
+                                                Зберегти
+                                            </button>
+                                            <button onClick={handleCancelEdit} className="comment-button">
+                                                Скасувати
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <p>
+                                                <strong>
+                                                    <Link to={
+                                                        user?.sub === comment.userId.id.toString()
+                                                            ? '/profile'
+                                                            : `/user-profile/${comment.userId.id}`
+                                                    }>
+                                                        {comment.userId.name}
+                                                    </Link>
+                                                </strong>: {comment.commentText}
+                                            </p>
+                                            <p className="comment-date">
+                                                {new Date(comment.postDate).toLocaleString()}
+                                            </p>
 
-                                                    {(user && (user.sub === comment.userId.id.toString() || user.roles.includes('ADMIN'))) && (
-                                                        <div>
-                                                            <button
-                                                                onClick={() => handleEditComment(comment.id, comment.commentText)}
-                                                                className="edit-button"
-                                                            >
-                                                                Редагувати
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handleDeleteComment(comment.id)}
-                                                                className="delete-button"
-                                                            >
-                                                                Видалити
-                                                            </button>
-                                                        </div>
-                                                    )}
+                                            {(user && (user.sub === comment.userId.id.toString() || user.roles.includes('ADMIN'))) && (
+                                                <div>
+                                                    <button
+                                                        onClick={() => handleEditComment(comment.id, comment.commentText)}
+                                                        className="edit-button"
+                                                    >
+                                                        Редагувати
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteComment(comment.id)}
+                                                        className="delete-button"
+                                                    >
+                                                        Видалити
+                                                    </button>
                                                 </div>
                                             )}
                                         </div>
-                                    ))
-                                ) : (
-                                    <p>Коментарів поки що немає. Будьте першим!</p>
-                                )}
-                            </div>
+                                    )}
+                                </div>
+                            ))
+                        ) : (
+                            <p>Коментарів поки що немає. Будьте першим!</p>
+                        )}
+                    </div>
                 </div>
             ) : (
                 <p>Не вдалося знайти інформацію про пісню.</p>

@@ -109,7 +109,7 @@ const CustomAudioPlayer = ({
             {track.coverImage && (
                 <Link to={`/music-file/${track.id}`}>
                     <img
-                        src={`data:image/jpeg;base64,${track.coverImage}`}
+                        src={track.coverImage}
                         alt={track.title}
                         className="player-cover"
                     />

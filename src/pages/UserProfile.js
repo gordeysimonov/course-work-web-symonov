@@ -217,11 +217,11 @@ const UserProfile = ({ user }) => {
                                             <strong>{file.uploadedBy?.name || 'Анонім'}</strong>
                                         </div>
 
-                                        {file.coverImage && (
+                                        {file.id && (
                                             <div className="file-cover-container">
                                                 <Link to={`/music-file/${file.id}`}>
                                                     <img
-                                                        src={`data:image/jpeg;base64,${file.coverImage}`}
+                                                        src={`http://localhost:8080/api/music-files/cover/${file.id}`}
                                                         alt="Cover"
                                                         className="file-cover-image"
                                                     />
@@ -229,22 +229,19 @@ const UserProfile = ({ user }) => {
                                             </div>
                                         )}
 
-                                        {/* ✅ кнопка Play замість локального плеєра */}
-                                        <div className="audio-player-container">
-                                            <button
-                                                className="play-btn"
-                                                onClick={() =>
-                                                    playTrack({
-                                                        id: file.id,
-                                                        src: `http://localhost:8080/api/music-files/${file.id}`,
-                                                        coverImage: file.coverImage,
-                                                        title: file.title,
-                                                    })
-                                                }
-                                            >
-                                                ▶ Play
-                                            </button>
-                                        </div>
+                                        <button
+                                            className="play-btn"
+                                            onClick={() =>
+                                                playTrack({
+                                                    id: file.id,
+                                                    src: `http://localhost:8080/api/music-files/${file.id}`,
+                                                    coverImage: `http://localhost:8080/api/music-files/cover/${file.id}`,
+                                                    title: file.title,
+                                                })
+                                            }
+                                        >
+                                            ▶ Play
+                                        </button>
 
                                         <div className="file-info-row">
                                             <div className="file-info-container">
@@ -275,13 +272,13 @@ const UserProfile = ({ user }) => {
                                                 <VerticalReadOnlyRating averageRate={ratings[file.id]}/>
                                             )}
                                         </div>
-                                        </div>
+                                    </div>
 
-                                        {user &&
-                                            (user.roles.includes('ADMIN') ||
-                                                Number(user.sub) === file.uploadedBy?.id) && (
-                                                <div className="file-actions">
-                                                    <Link to={`/edit/${file.id}`} state={{user}}>
+                                    {user &&
+                                        (user.roles.includes('ADMIN') ||
+                                            Number(user.sub) === file.uploadedBy?.id) && (
+                                            <div className="file-actions">
+                                            <Link to={`/edit/${file.id}`} state={{user}}>
                                                         <button>Редагувати</button>
                                                     </Link>
                                                     <button onClick={() => handleDelete(file.id)}>

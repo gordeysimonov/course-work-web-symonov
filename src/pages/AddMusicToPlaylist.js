@@ -174,11 +174,11 @@ const AddMusicToPlaylistPage = ({ user }) => {
                                 </Link>
                             </div>
 
-                            {file.coverImage && (
+                            {file.id && (
                                 <div className="file-cover">
                                     <Link to={`/music-file/${file.id}`}>
                                         <img
-                                            src={`data:image/jpeg;base64,${file.coverImage}`}
+                                            src={`http://localhost:8080/api/music-files/cover/${file.id}`}
                                             alt="Cover"
                                             width="200"
                                             height="200"

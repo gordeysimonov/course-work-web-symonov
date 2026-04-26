@@ -108,11 +108,11 @@ const PlaylistPage = ({ user }) => {
                                 </Link>
                             </div>
 
-                            {file.coverImage && (
+                            {file.id && (
                                 <div className="file-cover">
                                     <Link to={`/music-file/${file.id}`}>
                                         <img
-                                            src={`data:image/jpeg;base64,${file.coverImage}`}
+                                            src={`http://localhost:8080/api/music-files/cover/${file.id}`}
                                             alt="Cover"
                                             width="200"
                                             height="200"
@@ -138,7 +138,7 @@ const PlaylistPage = ({ user }) => {
                                         musicFiles.map(f => ({
                                             id: f.id,
                                             src: `http://localhost:8080/api/music-files/${f.id}`,
-                                            coverImage: f.coverImage,
+                                            coverImage: `http://localhost:8080/api/music-files/cover/${f.id}`,
                                             title: f.title,
                                         })),
                                         index
