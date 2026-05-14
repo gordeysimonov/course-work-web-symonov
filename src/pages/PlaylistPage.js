@@ -6,14 +6,20 @@ import { PlayerContext } from '../context/PlayerContext';
 import ReadOnlyStarRating from "../components/ReadOnlyStarRating";
 
 const PlaylistPage = ({ user }) => {
+
+    // Отримання ID плейлиста з URL
     const { playlistId } = useParams();
+
+    // Стани сторінки
     const [playlistData, setPlaylistData] = useState(null);
     const [musicFiles, setMusicFiles] = useState([]);
     const [error, setError] = useState(null);
     const [ratings, setRatings] = useState({});
 
-    const { playPlaylist } = useContext(PlayerContext); // ✅ замість playTrack
+    // Функція запуску всього плейлиста
+    const { playPlaylist } = useContext(PlayerContext);
 
+    // Завантаження інформації про плейлист
     useEffect(() => {
         const fetchPlaylistData = async () => {
             try {
@@ -28,13 +34,16 @@ const PlaylistPage = ({ user }) => {
         fetchPlaylistData();
     }, [playlistId]);
 
+    // Завантаження музичних файлів, які належать до плейлиста
     useEffect(() => {
         const fetchMusicFiles = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/music-files');
+
                 const filteredFiles = response.data.filter((file) =>
                     file.playlists?.some((playlist) => playlist.id === Number(playlistId))
                 );
+
                 setMusicFiles(filteredFiles);
             } catch (error) {
                 console.error('Error fetching music files:', error);
@@ -45,15 +54,18 @@ const PlaylistPage = ({ user }) => {
         fetchMusicFiles();
     }, [playlistId]);
 
+    // Видалення треку з плейлиста
     const handleRemoveFromPlaylist = async (fileId) => {
         try {
             await axios.delete(`http://localhost:8080/api/playlists/${playlistId}/remove-music/${fileId}`);
+
             setMusicFiles(musicFiles.filter((file) => file.id !== fileId));
         } catch (error) {
             console.error('Error removing music from playlist:', error);
         }
     };
 
+    // Завантаження рейтингу для кожного треку
     useEffect(() => {
         if (musicFiles.length === 0) return;
 
@@ -77,28 +89,41 @@ const PlaylistPage = ({ user }) => {
         });
     }, [musicFiles]);
 
+    // Повідомлення про помилку
     if (error) {
         return <div>{error}</div>;
     }
 
+    // Повідомлення під час завантаження
     if (!playlistData) {
         return <div>Завантаження...</div>;
     }
 
     return (
         <div className="music-list">
+
+            {/* Назва плейлиста */}
             <h2 className="playlist-title">{playlistData.name}</h2>
 
             <h3>Пісні цього плейлиста</h3>
+
             {musicFiles.length > 0 ? (
+
                 <ul className="music-list">
+
                     {musicFiles.map((file, index) => (
+
                         <li key={file.id} className="file-item">
+
+                            {/* Назва треку */}
                             <div className="file-title">
                                 <strong>{file.title}</strong>
                             </div>
+
+                            {/* Автор завантаження */}
                             <div className="file-user">
                                 <span>від </span>
+
                                 <Link
                                     to={user?.sub === file.uploadedBy?.id.toString()
                                         ? `/profile`
@@ -108,6 +133,7 @@ const PlaylistPage = ({ user }) => {
                                 </Link>
                             </div>
 
+                            {/* Обкладинка треку */}
                             {file.id && (
                                 <div className="file-cover">
                                     <Link to={`/music-file/${file.id}`}>
@@ -121,6 +147,7 @@ const PlaylistPage = ({ user }) => {
                                 </div>
                             )}
 
+                            {/* Рейтинг треку */}
                             <div className="readonly-rating">
                                 {ratings[file.id] && (
                                     <ReadOnlyStarRating
@@ -130,7 +157,7 @@ const PlaylistPage = ({ user }) => {
                                 )}
                             </div>
 
-                            {/* ✅ запуск плейлиста з цього треку */}
+                            {/* Запуск плейлиста з поточного треку */}
                             <button
                                 className="play-btn"
                                 onClick={() =>
@@ -148,21 +175,26 @@ const PlaylistPage = ({ user }) => {
                                 ▶ Play
                             </button>
 
+                            {/* Детальна інформація про трек */}
                             <div className="file-details">
                                 {file.artist && (
                                     <p><strong>Виконавець:</strong> {file.artist}</p>
                                 )}
+
                                 {file.genres && file.genres.length > 0 && (
                                     <p><strong>Жанри:</strong> {file.genres.map(genre => genre.genre).join(' • ')}</p>
                                 )}
+
                                 {file.tags && file.tags.length > 0 && (
                                     <p><strong>Теги:</strong> {file.tags.map(tag => tag.tagName).join(' • ')}</p>
                                 )}
+
                                 {file.year && (
                                     <p><strong>Рік:</strong> {file.year}</p>
                                 )}
                             </div>
 
+                            {/* Видалення треку з плейлиста */}
                             <button
                                 className="remove-button"
                                 onClick={() => handleRemoveFromPlaylist(file.id)}
@@ -172,12 +204,18 @@ const PlaylistPage = ({ user }) => {
                         </li>
                     ))}
                 </ul>
+
             ) : (
+
+                // Повідомлення про порожній плейлист
                 <p>Цей плейлист не містить пісень.</p>
             )}
 
+            {/* Перехід до сторінки додавання треку */}
             <Link to={`/add-music-to-playlist/${playlistId}`}>
-                <button className="add-music-button">Додати пісню до цього плейлиста</button>
+                <button className="add-music-button">
+                    Додати пісню до цього плейлиста
+                </button>
             </Link>
         </div>
     );

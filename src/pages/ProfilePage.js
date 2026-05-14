@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Link } from "react-router-dom";
 import PlaylistCard from '../components/PlaylistCard';
-import { PlayerContext } from '../context/PlayerContext'; // ✅ додаємо контекст
+import { PlayerContext } from '../context/PlayerContext';
 import VerticalReadOnlyRating from '../components/VerticalReadOnlyRating';
 import '../css/ProfilePage.css';
 
@@ -17,7 +17,7 @@ const ProfilePage = ({ user }) => {
     const [followersCount, setFollowersCount] = useState(0);
     const [ratings, setRatings] = useState({});
 
-    const { playTrack } = useContext(PlayerContext); // ✅ доступ до глобального плеєра
+    const { playTrack } = useContext(PlayerContext);
 
     useEffect(() => {
         if (!user) return;
@@ -120,16 +120,16 @@ const ProfilePage = ({ user }) => {
             <h2>Мій профіль</h2>
             {profileData ? (
                 <div>
-                    {/* ⚙️ Дані профілю */}
+                    {/* Дані профілю */}
                     <div className="profile-details-container">
                         <p><strong>Ім'я:</strong></p>
-                        <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} />
+                        <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)}/>
                         <p><strong>Email:</strong></p>
-                        <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} />
+                        <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)}/>
                         <button onClick={handleSaveChanges}>Зберегти зміни</button>
                     </div>
 
-                    {/* 🖼 Фото профілю */}
+                    {/* Фото профілю */}
                     <div className="profile-picture-section">
                         <h3>Фото профілю</h3>
                         <img
@@ -139,17 +139,46 @@ const ProfilePage = ({ user }) => {
                             height="100"
                             className="profile-picture"
                         />
-                        <input type="file" onChange={handleProfilePictureChange} />
+                        <input type="file" onChange={handleProfilePictureChange}/>
                         <button onClick={handleSaveProfilePicture}>Зберегти нове фото</button>
                     </div>
 
-                    {/* 👥 Підписки */}
+                    {/* Підписки */}
                     <div className="subscription-info">
                         <p><strong>Підписок:</strong> <Link to="/subscriptions">{subscriptionsCount}</Link></p>
                         <p><strong>Підписників:</strong> <Link to="/followers">{followersCount}</Link></p>
                     </div>
 
-                    {/* 🎵 Файли */}
+                    <div className="create-file-container">
+                        <Link to="/create-file">
+                            <button className="create-file-button">
+                                Створити музичний файл
+                            </button>
+                        </Link>
+                    </div>
+
+                    {/* Плейлисти */}
+                    <div className="playlists-section">
+                        <h3>Мої плейлисти</h3>
+                        <Link to="/create-playlist">
+                            <button>Створити плейлист</button>
+                        </Link>
+                        {playlists.length === 0 ? (
+                            <p>У вас ще немає плейлистів.</p>
+                        ) : (
+                            <div>
+                                {playlists.map((playlist) => (
+                                    <PlaylistCard
+                                        key={playlist.id}
+                                        playlist={playlist}
+                                        onDelete={handleDeletePlaylist}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Файли */}
                     <h2>Мої музичні файли</h2>
                     <div>
                         {musicFiles.length === 0 ? (
@@ -176,17 +205,21 @@ const ProfilePage = ({ user }) => {
                                                 </div>
                                             )}
 
-                                            {/* ✅ Велика кнопка Play */}
+                                            {/* Велика кнопка Play */}
                                             <button
                                                 className="play-btn"
-                                                onClick={() =>
+                                                onClick={() => {
                                                     playTrack({
                                                         id: file.id,
                                                         src: `http://localhost:8080/api/music-files/${file.id}`,
                                                         coverImage: `http://localhost:8080/api/music-files/cover/${file.id}`,
                                                         title: file.title,
-                                                    })
-                                                }
+                                                    });
+
+                                                    if (user) {
+                                                        axios.post(`http://localhost:8080/api/recommendations/user/${user.sub}/play/${file.id}`);
+                                                    }
+                                                }}
                                             >
                                                 ▶ Play
                                             </button>
@@ -208,14 +241,14 @@ const ProfilePage = ({ user }) => {
                                                 </div>
 
                                                 {ratings[file.id] !== undefined && (
-                                                    <VerticalReadOnlyRating averageRate={ratings[file.id]} />
+                                                    <VerticalReadOnlyRating averageRate={ratings[file.id]}/>
                                                 )}
                                             </div>
-                                            </div>
+                                        </div>
 
-                                            {user && (user.roles.includes('ADMIN') || Number(user.sub) === file.uploadedBy?.id) && (
+                                        {user && (user.roles.includes('ADMIN') || Number(user.sub) === file.uploadedBy?.id) && (
                                             <div className="file-actions">
-                                                <Link to={`/edit/${file.id}`} state={{ user }}>
+                                                <Link to={`/edit/${file.id}`} state={{user}}>
                                                     <button>Редагувати</button>
                                                 </Link>
                                                 <button onClick={() => handleDeleteMusicFile(file.id)}>Видалити</button>
@@ -227,26 +260,7 @@ const ProfilePage = ({ user }) => {
                         )}
                     </div>
 
-                    {/* 📂 Плейлисти */}
-                    <div className="playlists-section">
-                        <h3>Мої плейлисти</h3>
-                        <Link to="/create-playlist">
-                            <button>Створити плейлист</button>
-                        </Link>
-                        {playlists.length === 0 ? (
-                            <p>У вас ще немає плейлистів.</p>
-                        ) : (
-                            <div>
-                                {playlists.map((playlist) => (
-                                    <PlaylistCard
-                                        key={playlist.id}
-                                        playlist={playlist}
-                                        onDelete={handleDeletePlaylist}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </div>
+
                 </div>
             ) : (
                 <p>Завантаження профілю...</p>

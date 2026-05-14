@@ -201,3 +201,9 @@ h2 {
     cursor: default !important;
     pointer-events: none; /* ← ключове */
 }
+
+.recommendation-score {
+    margin-top: 6px;
+    font-weight: bold;
+    color: #03dac6;
+}

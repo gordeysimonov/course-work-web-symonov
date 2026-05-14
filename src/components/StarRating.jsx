@@ -45,7 +45,7 @@ const StarRating = ({ musicFileId, user, averageRate, onRateChange }) => {
         if (!user) return;
 
         if (userRate === value) {
-            // удалить оценку
+            // видалити оцінку
             try {
                 await axios.delete(`http://localhost:8080/api/rates/remove`, {
                     params: { userId: user.sub, musicFileId }
@@ -57,7 +57,7 @@ const StarRating = ({ musicFileId, user, averageRate, onRateChange }) => {
                 console.error(err);
             }
         } else {
-            // добавить / обновить
+            // додати або оновити оцінку
             try {
                 await axios.post(`http://localhost:8080/api/rates/add`, null, {
                     params: { userId: user.sub, musicFileId, value }

@@ -17,7 +17,7 @@ const MusicFilePage = ({ user }) => {
 
     const { playTrack } = useContext(PlayerContext);
 
-    // ⭐ Рейтинг
+    // Рейтинг
     const [averageRate, setAverageRate] = useState(0);
     const [ratesCount, setRatesCount] = useState(0);
 
@@ -26,7 +26,7 @@ const MusicFilePage = ({ user }) => {
     const [similarTracksLoading, setSimilarTracksLoading] = useState(false);
     const [similarTracksError, setSimilarTracksError] = useState('');
 
-    // ✦ Завантаження всіх файлів
+    // Завантаження всіх файлів
     useEffect(() => {
         axios.get('http://localhost:8080/api/music-files')
             .then((response) => {
@@ -37,14 +37,14 @@ const MusicFilePage = ({ user }) => {
             });
     }, []);
 
-    // ✦ Знаходимо конкретний файл
+    // Знаходимо конкретний файл
     useEffect(() => {
         if (musicFiles.length > 0) {
             setMusicFile(musicFiles.find(f => f.id === parseInt(musicFileId)));
         }
     }, [musicFileId, musicFiles]);
 
-    // ✦ Завантажуємо коментарі
+    // Завантажуємо коментарі
     useEffect(() => {
         if (musicFileId) {
             axios.get(`http://localhost:8080/api/music-files/${musicFileId}/comments`)
@@ -53,7 +53,7 @@ const MusicFilePage = ({ user }) => {
         }
     }, [musicFileId]);
 
-    // ⭐ Завантажуємо рейтинг
+    // Завантажуємо рейтинг
     useEffect(() => {
         if (musicFileId) {
             axios
@@ -68,10 +68,10 @@ const MusicFilePage = ({ user }) => {
         }
     }, [musicFileId]);
 
-    // ✦ Коментар — зміна
+    // Коментар — зміна
     const handleCommentChange = (event) => setComment(event.target.value);
 
-    // ✦ Додавання коментаря
+    // Додавання коментаря
     const handleAddComment = () => {
         if (!comment.trim()) return;
 
@@ -93,7 +93,7 @@ const MusicFilePage = ({ user }) => {
             .catch(() => setError('Не вдалося додати коментар. Спробуйте ще раз.'));
     };
 
-    // ✦ Видалення
+    // Видалення
     const handleDeleteComment = (commentId) => {
         if (window.confirm('Ви впевнені, що хочете видалити цей коментар?')) {
             axios.delete(`http://localhost:8080/api/comments/${commentId}`)
@@ -102,13 +102,13 @@ const MusicFilePage = ({ user }) => {
         }
     };
 
-    // ✦ Почати редагування
+    // Почати редагування
     const handleEditComment = (commentId, currentText) => {
         setEditingCommentId(commentId);
         setEditingCommentText(currentText);
     };
 
-    // ✦ Зберегти редагування
+    // Зберегти редагування
     const handleSaveComment = () => {
         if (editingCommentText.trim() === '') return;
 
@@ -222,14 +222,20 @@ const MusicFilePage = ({ user }) => {
                     {/* Play */}
                     <button
                         className="play-btn"
-                        onClick={() =>
+                        onClick={() => {
                             playTrack({
                                 id: musicFile.id,
                                 src: `http://localhost:8080/api/music-files/${musicFile.id}`,
                                 coverImage: `http://localhost:8080/api/music-files/cover/${musicFile.id}`,
                                 title: musicFile.title,
-                            })
-                        }
+                            });
+
+                            if (user) {
+                                axios.post(
+                                    `http://localhost:8080/api/recommendations/user/${user.sub}/play/${musicFile.id}`
+                                );
+                            }
+                        }}
                     >
                         ▶ Play
                     </button>

@@ -23,9 +23,7 @@ const Chats = ({ user }) => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    // ==============================
-    // Загрузка чатов
-    // ==============================
+    // Завантаження чатів
     useEffect(() => {
         if (!user?.sub) return;
 
@@ -44,9 +42,7 @@ const Chats = ({ user }) => {
         fetchChats();
     }, [user]);
 
-    // ==============================
-    // Загрузка unreadCounts
-    // ==============================
+    // Завантаження unreadCounts
     useEffect(() => {
         if (!user?.sub || chats.length === 0) return;
 
@@ -70,9 +66,7 @@ const Chats = ({ user }) => {
         fetchUnreadCounts();
     }, [chats, user?.sub]);
 
-    // ==============================
-    // Загрузка треков
-    // ==============================
+    // Вивантаження треків
     useEffect(() => {
         axios.get('http://localhost:8080/api/music-files')
             .then((response) => setMusicFiles(response.data))
@@ -82,9 +76,7 @@ const Chats = ({ user }) => {
             });
     }, []);
 
-    // ==============================
-    // Открытие чата из профиля
-    // ==============================
+    // Відкриття чату із профіля
     useEffect(() => {
         if (openChatId && chats.length > 0) {
             const chatToOpen = chats.find(c => c.id === openChatId);
@@ -92,9 +84,7 @@ const Chats = ({ user }) => {
         }
     }, [chats, openChatId]);
 
-    // ==============================
-    // Выбор чата
-    // ==============================
+    // Выбір чату
     const selectChat = async (chat) => {
         setSelectedChat(chat);
 
@@ -105,14 +95,14 @@ const Chats = ({ user }) => {
 
             setMessages(response.data);
 
-            // 🔴 Отмечаем все сообщения как прочитанные
+            // Усі повідомлення як "прочитані"
             await axios.put(
                 `http://localhost:8080/api/messages/read/${chat.id}`,
                 null,
                 { params: { userId: user.sub } }
             );
 
-            // Обновляем локальные счётчики непрочитанных
+            // Оновлюємо локальні лічильники непрочитаних
             setUnreadCounts(prev => ({
                 ...prev,
                 [String(chat.id)]: 0
@@ -123,9 +113,7 @@ const Chats = ({ user }) => {
         }
     };
 
-    // ==============================
-    // Отправка сообщения
-    // ==============================
+    // Надсилання повідомлення
     const recalcUnreadCounts = (chatsArr, currentUserId) => {
         const newCounts = {};
         for (let chat of chatsArr) {
@@ -154,12 +142,12 @@ const Chats = ({ user }) => {
 
             const newMsg = responsePost.data;
 
-            // Обновляем сообщения в правой панели
+            // Оновлюємо повідомлення у лівій панелі
             setMessages(prev =>
                 [...prev.map(msg => ({ ...msg, read: true })), newMsg]
             );
 
-            // Обновляем чат в списке чатов
+            // Оновлюємо чат у списку чатів
             setChats(prevChats =>
                 prevChats.map(c =>
                     c.id === selectedChat.id
@@ -168,12 +156,12 @@ const Chats = ({ user }) => {
                 )
             );
 
-            // Пересчитываем непрочитанные
+            // Перераховуємо непрочитані
             setUnreadCounts(prev => recalcUnreadCounts([...chats], user.sub));
 
             setNewMessage('');
 
-            // Помечаем чат на сервере как прочитанный
+            // Відмічаємо чат як "прочитаний"
             await axios.put(
                 `http://localhost:8080/api/messages/read/${selectedChat.id}`,
                 null,
@@ -265,7 +253,7 @@ const Chats = ({ user }) => {
                                 </div>
                             </div>
 
-                            {/* 🔵 Синяя точка напротив чата */}
+                            {/* Синя точка напроти чату */}
                             {unreadCounts[String(chat.id)] > 0 && (
                                 <div className="chat-unread-dot"></div>
                             )}

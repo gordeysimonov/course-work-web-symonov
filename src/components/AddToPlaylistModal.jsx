@@ -48,7 +48,7 @@ const AddToPlaylistModal = ({ trackId, user, onClose }) => {
 
                 setPlaylists(playlistsWithFlag);
             } catch (error) {
-                console.error("❌ Помилка при завантаженні плейлистів:", error.response || error);
+                console.error("Помилка при завантаженні плейлистів:", error.response || error);
                 setMessage("Не вдалося завантажити ваші плейлисти. Спробуйте пізніше.");
             } finally {
                 setLoading(false);
@@ -110,7 +110,7 @@ const AddToPlaylistModal = ({ trackId, user, onClose }) => {
                                                     )
                                                 );
                                             } catch (error) {
-                                                console.error("❌ Error adding:", error);
+                                                console.error("Error adding:", error);
                                             }
                                         }}
                                     >

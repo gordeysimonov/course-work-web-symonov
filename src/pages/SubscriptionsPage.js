@@ -59,7 +59,7 @@ const SubscriptionsPage = ({ user }) => {
                     {filteredSubscriptions.map((subscription) => (
                         <li key={subscription.id} className="subscription-item">
                             <img
-                                src={`data:image/jpeg;base64,${subscription.profilePicture}`}
+                                src={`http://localhost:8080/api/users/${subscription.id}/image`}
                                 alt="Profile"
                                 className="subscription-profile-picture"
                             />

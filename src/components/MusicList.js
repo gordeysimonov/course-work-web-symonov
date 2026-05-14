@@ -192,14 +192,18 @@ const MusicList = ({ user }) => {
 
                             <button
                                 className="play-btn"
-                                onClick={() =>
+                                onClick={() => {
                                     playTrack({
                                         id: file.id,
                                         src: `http://localhost:8080/api/music-files/${file.id}`,
                                         coverImage: `http://localhost:8080/api/music-files/cover/${file.id}`,
-                                        title: file.title
-                                    })
-                                }
+                                        title: file.title,
+                                    });
+
+                                    if (user) {
+                                        axios.post(`http://localhost:8080/api/recommendations/user/${user.sub}/play/${file.id}`);
+                                    }
+                                }}
                             >
                                 ▶ Play
                             </button>

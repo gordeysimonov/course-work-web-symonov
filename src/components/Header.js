@@ -23,12 +23,12 @@ const Header = ({ user, onLogout }) => {
         if (user) {
             const intervalId = setInterval(async () => {
                 try {
-                    // 🔴 Повідомлення
+                    // Повідомлення
                     const notificationsRes = await axios.get(`http://localhost:8080/api/notifications/user/${user.sub}`);
                     const unreadNotifications = notificationsRes.data.filter(n => n.status === 'unread');
                     setHasUnreadNotifications(unreadNotifications.length > 0);
 
-                    // 🔵 Чати
+                    // Чати
                     const chatsRes = await axios.get(`http://localhost:8080/api/chats/user/${user.sub}`);
                     const chats = chatsRes.data;
 

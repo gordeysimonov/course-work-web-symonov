@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { PlayerContext } from '../context/PlayerContext'; // ✅ імпортуємо контекст
+import { PlayerContext } from '../context/PlayerContext';
 import '../css/UserProfile.css';
 import VerticalReadOnlyRating from "../components/VerticalReadOnlyRating";
 
@@ -15,7 +15,7 @@ const UserProfile = ({ user }) => {
     const [ratings, setRatings] = useState({});
     const navigate = useNavigate();
 
-    const { playTrack } = useContext(PlayerContext); // ✅ отримуємо функцію для запуску треку
+    const { playTrack } = useContext(PlayerContext);
 
     useEffect(() => {
         axios
@@ -106,16 +106,16 @@ const UserProfile = ({ user }) => {
         if (!user) return;
 
         try {
-            // 1️⃣ отримуємо всі чати поточного користувача
+            // отримуємо всі чати поточного користувача
             const response = await axios.get(`http://localhost:8080/api/chats/user/${user.sub}`);
             const userChats = response.data;
 
-            // 2️⃣ шукаємо чат, де є цей користувач
+            // шукаємо чат, де є цей користувач
             let chat = userChats.find(c =>
                 c.participants?.some(p => String(p.id) === String(userId))
             );
 
-            // 3️⃣ якщо чату немає, створюємо його через правильний ендпоінт
+            // якщо чату немає, створюємо його через правильний ендпоінт
             if (!chat) {
                 const createRes = await axios.post(`http://localhost:8080/api/chats/private`, null, {
                     params: { user1Id: user.sub, user2Id: userId }
@@ -123,7 +123,7 @@ const UserProfile = ({ user }) => {
                 chat = createRes.data;
             }
 
-            // 4️⃣ перенаправляємо на /chats та відкриваємо потрібний чат
+            // перенаправляємо на /chats та відкриваємо потрібний чат
             navigate(`/chats`, { state: { openChatId: chat.id } });
 
         } catch (err) {
@@ -195,7 +195,7 @@ const UserProfile = ({ user }) => {
 
                             {/* Кнопка "Написати повідомлення" */}
                             <button
-                                className="subscribe-button" // можна стилізувати як підписку
+                                className="subscribe-button"
                                 style={{ marginTop: '10px', backgroundColor: '#03dac6', color: '#001f3d' }}
                                 onClick={handleMessageUser}
                             >
@@ -231,14 +231,18 @@ const UserProfile = ({ user }) => {
 
                                         <button
                                             className="play-btn"
-                                            onClick={() =>
+                                            onClick={() => {
                                                 playTrack({
                                                     id: file.id,
                                                     src: `http://localhost:8080/api/music-files/${file.id}`,
                                                     coverImage: `http://localhost:8080/api/music-files/cover/${file.id}`,
                                                     title: file.title,
-                                                })
-                                            }
+                                                });
+
+                                                if (user) {
+                                                    axios.post(`http://localhost:8080/api/recommendations/user/${user.sub}/play/${file.id}`);
+                                                }
+                                            }}
                                         >
                                             ▶ Play
                                         </button>
